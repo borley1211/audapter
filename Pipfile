@@ -5,10 +5,12 @@ verify_ssl = true
 
 [dev-packages]
 padasip = "*"
-pyalsaaudio = "*"
 
 [packages]
 pip = "*"
+numpy = "*"
+scipy = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.7"
