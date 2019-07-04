@@ -1,16 +1,15 @@
-.. src documentation master file, created by
-   sphinx-quickstart on Wed Jul  3 12:07:23 2019.
+.. adaptune documentation master file, created by
+   sphinx-quickstart on Thu Jul  4 17:04:31 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to src's documentation!
-===============================
+Welcome to adaptune's documentation!
+====================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
 
-   adaptune
 
 
 Indices and tables
