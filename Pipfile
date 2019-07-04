@@ -6,7 +6,6 @@ verify_ssl = true
 [dev-packages]
 padasip = "*"
 sphinx = "*"
-nose = "*"
 flake8 = "*"
 pylint = "*"
 jupyter = "*"

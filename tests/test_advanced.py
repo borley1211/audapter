@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from .context import sample
-
 import unittest
+
+from .context import adaptune
 
 
 class AdvancedTestSuite(unittest.TestCase):
     """Advanced test cases."""
 
     def test_thoughts(self):
-        self.assertIsNone(sample.hmm())
+        self.assertIsNone()
 
 
 if __name__ == '__main__':
