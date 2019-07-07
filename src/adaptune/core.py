@@ -1,23 +1,31 @@
 import numpy as np
 from padasip import padasip as pa
 
+from typing import Union, Tuple
 
 class AdapTuner(object):
     """
     Adaptive filter for signal tuning
     """
-    def __init__(self, model: 'str'="lms", f_init: 'ndarray or str'=None):
-        self.filter = pa.filters.AdaptiveFilter(model=model)
-        self._initialize(f_init)
 
-    def _initialize(self, f_init):
-        """Initialize this filter
+    def __init__(
+            self,
+            domain: str = "time",
+            algorithm: str = "nlms",
+            f_init: Union[np.ndarray, str] = None) -> None:
+        self.filter = pa.filters.AdaptiveFilter(model=algorithm)
+        self._initialize(f_init)
+        # 入力を記憶しておくndarrayを準備すべき
+
+    def _initialize(self, f_init: Union[np.ndarray, str]) -> None:
+        """
+        _initialize initialize filter-weights
         
-        Arguments:
-            f_init {ndarray or str} -- initial filter-weights
+        Args:
+            f_init (Union[np.ndarray, str]): initial weights
         
         Raises:
-            ValueError: 'type(f_init)' is not suitable
+            ValueError: type(f_init) is not suitable
         """
         if f_init is None:
             pass
@@ -29,43 +37,38 @@ class AdapTuner(object):
             raise ValueError(
                 "'f_init' seems unlike filter-weights or true-filename.")
 
-    def _reconfigure(self, other_model: 'str'):
-        """Reconfigure filter-model
-        
-        Arguments:
-            other_model {str} -- other model-type
+    def _reconfigure(self, algorithm: str) -> None:
         """
-        self.filter = pa.filters.AdaptiveFilter(model=other_model)
+        _reconfigure reconfig filter-algorithm
+        
+        Args:
+            algorithm (str): other algorithm
+        """
+        self.filter = pa.filters.AdaptiveFilter(model=algorithm)
 
-    def tune(self, desired: 'ndarray', input: 'ndarray', other_model: 'str'=None)->'tuple':
-        """Tune filter for fitting outputs closer to 'desired'
+    def tune(self, desired: np.ndarray, input: np.ndarray, other_algo: str = None) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         
-        Arguments:
-            desired {ndarray} -- desired data (1-dimension matrix)
-            input {ndarray} -- input data (2-dimension matrix)
-        
-        Keyword Arguments:
-            other_model {str} -- other filter-model-type (default: {None})
-        
-        Returns:
-            tuple -- matrixes returned by running 'AdapTuner'
-        """
-        if other_model is not None:
-            self._reconfigure(other_model)
+        if other_algo is not None:
+            self._reconfigure(other_algo)
         return self.filter.run(desired, input)
 
-    def get_filter_parameters(self)->'ndarray':
-        """Get current filter-weights
+    def get_filter_parameters(self) -> np.ndarray:
+        """
+        get_filter_parameters get current filter-params
         
         Returns:
-            ndarray -- current filter-weights
+            np.ndarray: params
         """
         return self.filter.w
 
-    def save(self, filename: 'str'):
-        """Save current filter to file
+    def save(self, filename: str) -> None:
+        """
+        save save filter-weights for specified file
         
-        Arguments:
-            filename {str} -- filename or path/to/file
+        Args:
+            filename (str): filename you want to open and (over)write
+        
+        Returns:
+            None: 
         """
         np.savez(filename, self.get_filter_parameters())

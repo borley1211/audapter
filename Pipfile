@@ -6,18 +6,24 @@ verify_ssl = true
 [dev-packages]
 padasip = "*"
 sphinx = "*"
-flake8 = "*"
 pylint = "*"
 jupyter = "*"
-autopep8 = "*"
 sphinx-rtd-theme = "*"
 recommonmark = "*"
+flake8 = "*"
+autopep8 = "*"
+mypy = "*"
+typing = "*"
+python-language-server = "*"
 
 [packages]
 pip = "*"
 numpy = "*"
 scipy = "*"
 matplotlib = "*"
+typing = "*"
+pyalsaaudio = "*"
+librosa = "*"
 
 [requires]
 python_version = "3.7"
