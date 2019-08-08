@@ -91,3 +91,6 @@ ENV/
 
 # MyPy's caches
 .mypy_cache/
+
+# Pipenv lockfile
+*.lock
