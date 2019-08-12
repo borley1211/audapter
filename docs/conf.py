@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -10,16 +11,21 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+from recommonmark.transform import AutoStructify
+from recommonmark.parser import CommonMarkParser
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../src/'))
+sys.path.insert(0, os.path.abspath('../src'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'adaptune'
-copyright = '2019, Kazuma Miebori'
-author = 'Kazuma Miebori'
+copyright = '2019, Miebori Kazuma'
+author = 'Miebori Kazuma'
+
+# The full version, including alpha/beta/rc tags
+release = '0.0.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -64,3 +70,16 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+source_suffix = ['.rst', '.md']
+
+
+github_doc_root = 'https://github.com/rtfd/recommonmark/tree/master/doc/'
+
+
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+        'url_resolver': lambda url: github_doc_root + url,
+        'auto_toc_tree_section': 'Contents',
+    }, True)
+    app.add_transform(AutoStructify)

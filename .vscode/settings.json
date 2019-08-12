@@ -1,5 +1,5 @@
 {
-    "python.pythonPath":".venv/bin/python",
+    "python.pythonPath": ".venv/bin/python",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -7,10 +7,16 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/*.pyc": true,
-        "**/__pycache__": true
+        "**/__pycache__": true,
+        "**/.mypy_cache": true,
     },
     "python.linting.enabled": true,
     "python.autoComplete.addBrackets": true,
     "python.jediEnabled": false,
     "python.analysis.logLevel": "Trace",
+    "restructuredtext.confPath": "${workspaceFolder}/docs",
+    "restructuredtext.experimental": true,
+    "files.watcherExclude": {
+        "**/.venv/**": true
+    },
 }
