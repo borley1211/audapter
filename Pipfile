@@ -33,5 +33,5 @@ python_version = "3.7"
 
 [scripts]
 
-sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/default.py"
-sphinxbuild = "sphinx-build -b singlehtml ./docs ./docs/_build"
+sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/default.py ./tests"
+sphinxbuild = "sphinx-build -b html -a -E ./docs ./docs/_build"

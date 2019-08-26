@@ -5,4 +5,3 @@ adaptune
    :maxdepth: 4
 
    adaptune
-   tests
