@@ -17,7 +17,6 @@ typing = "*"
 python-language-server = "*"
 pip = "*"
 doc8 = "*"
-traitlets = "*"
 
 [packages]
 pip = "*"
