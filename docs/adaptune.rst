@@ -12,6 +12,14 @@ adaptune.core module
    :undoc-members:
    :show-inheritance:
 
+adaptune.monitor module
+-----------------------
+
+.. automodule:: adaptune.monitor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 adaptune.passalsa module
 ------------------------
 

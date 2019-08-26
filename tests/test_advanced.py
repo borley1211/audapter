@@ -2,7 +2,7 @@
 
 import unittest
 
-from .context import adaptune
+import adaptune
 
 
 class AdvancedTestSuite(unittest.TestCase):
