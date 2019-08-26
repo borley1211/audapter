@@ -17,6 +17,7 @@ typing = "*"
 python-language-server = "*"
 pip = "*"
 doc8 = "*"
+traitlets = "*"
 
 [packages]
 pip = "*"
@@ -32,6 +33,5 @@ padasip = "*"
 python_version = "3.7"
 
 [scripts]
-
-sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/default.py ./tests"
+sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"
 sphinxbuild = "sphinx-build -b html -a -E ./docs ./docs/_build"

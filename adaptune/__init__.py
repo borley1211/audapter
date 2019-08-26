@@ -1,2 +1,2 @@
 from adaptune import *
-from adaptune.default import *
+from adaptune.config import *
