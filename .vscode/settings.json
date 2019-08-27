@@ -17,6 +17,7 @@
     "restructuredtext.confPath": "${workspaceFolder}/docs",
     "restructuredtext.experimental": true,
     "python.linting.flake8Args": [
-        "--ignore=W293, W504, E501, W605"
+        "--ignore=W293, W504, E501, W605, F403"
     ],
+    "python.linting.flake8CategorySeverity.F": "Hint",
 }

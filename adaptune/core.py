@@ -4,22 +4,13 @@ import numpy as np
 from librosa.core import istft, stft
 from padasip import padasip as pa
 
-from adaptune import params
-
-domain = 'time'
-
-base_filter = pa.filters.FilterNLMS
-filter_params = {
-    "mu": 0.01,
-    "w_init": 'zeros'
-}
+from adaptune.config import base_filter, domain, filter_params, params
 
 
 class AdapTuner:
     """
     音響信号処理に利用可能な適応フィルタの基本クラスです。
     """
-    global filter_params, base_filter, domain
 
     def __init__(
             self,
@@ -36,7 +27,30 @@ class AdapTuner:
         self.filter = base_filter(self.n_filter, **filter_params)
         self.datas_in = np.zeros(self.n_filter)  # 入力を記憶しておくndarray
 
-    def tune_at_time(
+    def _tune_at_time(
+        self, desired: np.ndarray,
+        input: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Time-based tuning
+        """
+        self.filter.predict(input)
+        return self.filter.run(desired, input)
+
+    def _tune_at_freq(
+        self, desired: np.ndarray,
+        input: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        Frequency-based tuning
+        """
+        D_d = np.abs(stft(desired, n_fft=self.n_filter))
+        D_i = np.abs(stft(input, n_fft=self.n_filter))
+        self.filter.predict(D_i)
+        X_out, Err, W_frq = self.filter.run(D_d, D_i)
+        return istft(X_out), istft(Err), W_frq
+
+    def tune(
         self, desired: np.ndarray,
         input: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -60,27 +74,10 @@ class AdapTuner:
                 * weights (np.ndarray): 現在までのフィルタ係数(の履歴)。2次元配列。
 
         """
-        self.filter.predict(input)
-        return self.filter.run(desired, input)
-
-    def tune_at_freq(
-        self, desired: np.ndarray,
-        input: np.ndarray
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        D_d = np.abs(stft(desired, n_fft=self.n_filter))
-        D_i = np.abs(stft(input, n_fft=self.n_filter))
-        self.filter.predict(D_i)
-        X_out, Err, W_frq = self.filter.run(D_d, D_i)
-        return istft(X_out), istft(Err), W_frq
-
-    def tune(
-        self, desired: np.ndarray,
-        input: np.ndarray
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         if self.domain == 'time':
-            x_out = self.tune_at_time(desired, input)
+            x_out = self._tune_at_time(desired, input)
         elif self.domain == 'freq':
-            x_out = self.tune_at_freq(desired, input)
+            x_out = self._tune_at_freq(desired, input)
         return x_out
 
     def get_filter_weights(self) -> np.ndarray:

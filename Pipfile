@@ -4,7 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-padasip = "*"
 sphinx = "*"
 pylint = "*"
 jupyter = "*"
@@ -21,12 +20,12 @@ doc8 = "*"
 [packages]
 pip = "*"
 numpy = "*"
-scipy = "*"
 matplotlib = "*"
 typing = "*"
 pyalsaaudio = "*"
 librosa = "*"
 padasip = "*"
+commentjson = "*"
 
 [requires]
 python_version = "3.7"

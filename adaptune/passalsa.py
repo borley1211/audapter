@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Optional
 from time import time
+from typing import Optional
 
 import alsaaudio as alsa
 import numpy as np
@@ -11,8 +11,7 @@ from adaptune import core, params
 device = 'default'
 
 
-class ALSA_CAPTURE(object):
-    global params, device
+class ALSA_Source(object):
     """
     Linuxの基本サウンドシステム(ALSA)にアクセスし、音声入力を検出するクラスです。
     """
@@ -47,8 +46,7 @@ class ALSA_CAPTURE(object):
             yield x
 
 
-class ALSA_PLAYBACK(object):
-    global params, device
+class ALSA_Sink(object):
     """
     Linuxの基本サウンドシステム(ALSA)にアクセスし、音声を出力するクラスです。
     """
@@ -84,9 +82,9 @@ def main(
     domain: str = 'time',
     run_time: Optional[int] = None
 ):
-    PCM_MONITOR = ALSA_CAPTURE()
-    PCM_SINK = ALSA_PLAYBACK()
-    PCM_MIC = ALSA_CAPTURE()
+    PCM_MONITOR = ALSA_Source()
+    PCM_SINK = ALSA_Sink()
+    PCM_MIC = ALSA_Source()
 
     filter = core.AdapTuner()
 

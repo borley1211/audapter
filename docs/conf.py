@@ -10,6 +10,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import ast
+import re
 import os
 import sys
 from typing import List
@@ -24,7 +26,9 @@ copyright = '2019, Miebori Kazuma'
 author = 'Miebori Kazuma'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+with open(os.path.join('../', project, '__init__.py')) as f:
+    match = re.search(r'__version__\s+=\s+(.*)', f.read())
+release = str(ast.literal_eval(match.group(1)))
 
 
 # -- General configuration ---------------------------------------------------

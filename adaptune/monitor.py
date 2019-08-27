@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+現在使用しているサウンドシステムの出力をモニタリングするツールです。
+matplotlibライブラリを使用して、スペクトルアナライザを表示します。
+"""
 import librosa as rosa
 import numpy as np
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from adaptune import passalsa, params
 
-PCMDEV = passalsa.ALSA_CAPTURE()
+PCMDEV = passalsa.ALSA_Source()
 
 fftlength = 2 * params["period_size"]
 vol_scale = 2 ** 21
