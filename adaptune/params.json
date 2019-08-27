@@ -13,16 +13,16 @@
     ],
     "params": {
         "rate": 48000,
-        "format": "S16_LE", // as stated in 'alsaaudio.PCM_FORMAT_**(here)**'
-        "channels": 2,
-        "period_size": 1024
+        "formatname": "S16_LE", // as stated in 'alsaaudio.PCM_FORMAT_**(here)**'
+        "period_size": 1024,
+        "channels": 2
     },
     "filter_params": {
         "mu": 0.01,
-        "w_init": "zeros" // specify '(/path/to/file)', 'random', or 'zeros'
+        "w": "zeros" // specify '(/path/to/file)', 'random', or 'zeros'
     },
     "filter_domain": "time", // 'time' or 'freq'
-    "base_filter": "NLMS", // select algorithm from [Padasip — Padasip 1.1.1 documentation](https://matousc89.github.io/padasip/)
+    "filter_algo": "NLMS", // select algorithm from [Padasip — Padasip 1.1.1 documentation](https://matousc89.github.io/padasip/)
     "devices": {
         "main": "default",
         "monitor": "monitor",

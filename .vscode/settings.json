@@ -1,14 +1,12 @@
 {
     "python.pythonPath": ".venv/bin/python",
     "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
         "**/*.pyc": true,
-        "**/__pycache__": true,
-        "**/.mypy_cache": true,
+        "**/CVS": true
     },
     "python.linting.enabled": true,
     "python.autoComplete.addBrackets": true,
@@ -20,4 +18,8 @@
         "--ignore=W293, W504, E501, W605, F403"
     ],
     "python.linting.flake8CategorySeverity.F": "Hint",
+    "files.watcherExclude": {
+        "**/__pycache__/**": true,
+        "**/.mypy_cache/**": true
+    },
 }
