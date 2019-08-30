@@ -46,6 +46,7 @@ class ALSA_Source(object):
                     x,
                     (0, (self.p_size - x.size) // self.ch),
                     mode='constant')
+                x = np.ravel(x)
             yield x
 
 
@@ -103,5 +104,9 @@ def run(
         PCM_SINK.write_data(x_out)
         if run_time is not None:
             ret = True if int(time() - t_start) >= run_time else False
+            if ret:
+                break
+        else:
+            continue
 
     return ret
