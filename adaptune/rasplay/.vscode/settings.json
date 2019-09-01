@@ -1,0 +1,7 @@
+{
+    "files.autoSave": "afterDelay",
+    "python.pythonPath": ".venv/bin/python3.5",
+    "files.watcherExclude": {
+        "**/.venv/**": true
+    },
+}
