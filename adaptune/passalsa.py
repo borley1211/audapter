@@ -1,7 +1,7 @@
 #!/usr/dev python3
 # -*- coding: utf-8 -*-
 from time import time
-from typing import Optional, Union
+from typing import Optional, Union, Iterator
 
 import alsaaudio as alsa
 import numpy as np
@@ -15,7 +15,7 @@ class ALSA_Source(object):
     Linuxの基本サウンドシステム(ALSA)にアクセスし、音声入力を検出するクラスです。
     """
 
-    def __init__(self, device=dev["monitor"], mode=alsa.PCM_NORMAL, params=params):
+    def __init__(self, device=dev["monitor"], mode=alsa.PCM_NONBLOCK, params=params):
         self.pcm = alsa.PCM(type=alsa.PCM_CAPTURE, mode=mode, device=device)
         self.config(**params)
         self.devname = device
@@ -34,10 +34,12 @@ class ALSA_Source(object):
         self.fmt = formatname
         self.p_size = period_size
         self.ch = channels
-
-    def read_data(self) -> np.ndarray:
-        while True:
-            _length, data = self.pcm.read()
+        
+    def _read_once(self) -> np.ndarray:
+        length, data = self.pcm.read()
+        if length <= 0:
+            x = np.zeros(self.p_size)
+        else:
             x = np.frombuffer(
                 data,
                 dtype=np.int16)
@@ -46,7 +48,11 @@ class ALSA_Source(object):
                     x,
                     (0, (self.p_size - x.size) // self.ch),
                     mode='constant')
-                x = np.ravel(x)
+        return x
+
+    def read_data(self) -> Iterator:
+        while True:
+            x = self._read_once()
             yield x
 
 
