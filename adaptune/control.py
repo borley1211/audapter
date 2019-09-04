@@ -1,6 +1,5 @@
-import pkgutil
-import re
-import subprocess
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from pygments.token import Token
 from prompt_toolkit.styles.pygments import style_from_pygments_dict
 from prompt_toolkit.styles import pygments_token_to_classname
@@ -21,68 +20,32 @@ import os
 import commentjson
 
 
-with open(
-    os.path.join(os.path.dirname(__file__), "params.json"), 'r', encoding='UTF-8'
-) as file:
-    config = commentjson.load(file)
-
-params = config["params"]
-params["formatname"] = eval("alsa." + params["formatname"])
-
-filter_params = config["filter_params"]
-
-domain = config["filter_domain"]
-
-default_filter = eval("pa.filters." + config["filter_algo"])
-
-dev = config["devices"]
-
-
-def dump_defaults(
-    puts: bool = True, description: bool = False
-) -> Tuple[str, dict]:
-    """
-    'params.json' に設定された既定値を出力します。
-
-    Args:
-        puts (bool, optional): 標準出力に既定値を出力するかどうか。 デフォルトは True です。
-        description (bool, optional): 冒頭の説明文を出力に含めるかどうか。デフォルトは False です。
-
-    Returns:
-        Tuple[str, dict]: 文字列型、辞書型の既定値を tuple として返します。
-    """
-    if description is False:
-        del config["__description__"]
-    if puts:
-        print(commentjson.dumps(config, indent=4))
-    return commentjson.dumps(config), config
-
-
-# [preview] Use 'prompt_toolkit' to config
-
-del config["__description__"]
-
-choices = list(config.keys())
-string_query = " Configure about: "
-inst = " (Use arrow keys)"
+def _get_conf():
+    with open(
+        os.path.join(os.path.dirname(__file__), "params.json"), 'r', encoding='UTF-8'
+    ) as file:
+        config = commentjson.load(file)
+    keylist = list(config.keys())
+    keylist = [key for key in keylist if key != '__description__']
+    return config, keylist
 
 
 def selected_item(text):
     # res = subprocess.call(text)
     # print(res)
-    pass
+    print(text)
 
 
 class InquirerControl(FormattedTextControl):
     selected_option_index = 0
     answered = False
 
-    def __init__(self, choices, **kwargs):
+    def __init__(self, config, choices, **kwargs):
         self.choices = choices
         super(
             InquirerControl,
             self).__init__(
-            self._get_choice_tokens,
+            self._get_choiced_tokens,
             **kwargs)
 
     @property
@@ -122,19 +85,19 @@ class InquirerControl(FormattedTextControl):
         return self.choices[self.selected_option_index]
 
 
-ic = InquirerControl(choices)
+ic = InquirerControl(*_get_conf())
 
 
 def get_prompt_tokens():
     tokens = []
     _ = Token
     tokens.append((Token.QuestionMark, "?"))
-    tokens.append((Token.Question, string_query))
+    tokens.append((Token.Question, " Configure about: "))
     if ic.answered:
         tokens.append((Token.Answer, " " + ic.get_selection()))
         selected_item(ic.get_selection())
     else:
-        tokens.append((Token.Instruction, inst))
+        tokens.append((Token.Instruction, " (Use arrow keys)"))
     return [("class:" + pygments_token_to_classname(x[0]), str(x[1]))
             for x in tokens]
 
@@ -178,7 +141,7 @@ def move_cursor_up(event):
 
 
 @kb.add("enter", eager=True)
-def set_answer(event):
+def set_value(event):
     ic.answered = True
     event.app.exit(None)
 
@@ -198,7 +161,3 @@ app = Application(
     layout=layout, key_bindings=kb, mouse_support=False, style=inquirer_style
 )
 app.run()
-
-
-if __name__ == '__main__':
-    dump_defaults(description=True)

@@ -1,16 +1,4 @@
 {
-    "__description__": [
-        "This project uses *commentjson* package ",
-        "for parsing this configuration file, ",
-        "so YOU CAN add some COMMENTS here. ",
-        " @ @ @ ",
-        "But then, you HAVE TO WRITE JUST AS BELOW! ",
-        "   1) the INLINE COMMENT FORMAT ",
-        "   2) in *Python(#...)* or *JavaScript(//...)* ",
-        " @ @ @ ",
-        "See the documentation for details... ",
-        "[commentjson - Add comments in JSON files](https://commentjson.readthedocs.io/en/latest/)"
-    ],
     "params": {
         "rate": 48000,
         "formatname": "PCM_FORMAT_S16_LE", // as stated in 'alsaaudio.*PCM_FORMAT_XX*'
@@ -21,12 +9,7 @@
         "mu": 0.01,
         "w": "zeros" // specify '(/path/to/file)', 'random', or 'zeros'
     },
-    "filter_domain": {
-        "selected": "time",
-        "available": [
-            "time", "freq"
-        ]
-    },
+    "filter_domain": "time",
     "filter_algo": "FilterNLMS", // select algorithm from [Padasip — Padasip 1.1.1 documentation](https://matousc89.github.io/padasip/)
     "devices": {
         "main": "default",
