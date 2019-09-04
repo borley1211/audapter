@@ -26,6 +26,7 @@ pyalsaaudio = "*"
 librosa = "*"
 padasip = "*"
 commentjson = "*"
+prompt-toolkit = "*"
 
 [requires]
 python_version = "3.7"
