@@ -28,6 +28,8 @@ librosa = "*"
 padasip = "*"
 commentjson = "*"
 prompt-toolkit = "*"
+sounddevice = "*"
+pysoundfile = "*"
 
 [requires]
 python_version = "3.7"

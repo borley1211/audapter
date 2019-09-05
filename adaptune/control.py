@@ -13,27 +13,47 @@ from prompt_toolkit.layout.containers import Window
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.filters import IsDone
 from prompt_toolkit.application import Application
-from typing import Tuple
+from prompt_toolkit.shortcuts import yes_no_dialog
+from typing import Tuple, Union, Any
 import alsaaudio as alsa
 from padasip import padasip as pa
 import os
 import commentjson
 
 
-def _get_conf():
-    with open(
-        os.path.join(os.path.dirname(__file__), "params.json"), 'r', encoding='UTF-8'
-    ) as file:
-        config = commentjson.load(file)
+def _get_conf(configobj: Union[str, dict]) -> Tuple[Any, list]:
+    if isinstance(configobj, str):
+        with open(
+            os.path.join(os.path.dirname(__file__), str(configobj)), 'r', encoding='UTF-8'
+        ) as file:
+            config = commentjson.load(file)
+    elif isinstance(configobj, dict):
+        config = configobj
+    else:
+        return configobj, []
     keylist = list(config.keys())
     keylist = [key for key in keylist if key != '__description__']
     return config, keylist
 
 
-def selected_item(text):
-    # res = subprocess.call(text)
-    # print(res)
-    print(text)
+confdict, _ = _get_conf("config.json")
+
+finished = False
+want_to_continue = False
+
+
+kb = KeyBindings()
+
+
+inquirer_style = style_from_pygments_dict(
+    {
+        Token.QuestionMark: "#5F819D",
+        Token.Selected: "#FF9D00",
+        Token.Instruction: "",
+        Token.Answer: "#FF9D00 bold",
+        Token.Question: "bold",
+    }
+)
 
 
 class InquirerControl(FormattedTextControl):
@@ -42,6 +62,7 @@ class InquirerControl(FormattedTextControl):
 
     def __init__(self, config, choices, **kwargs):
         self.choices = choices
+        self.availables = config
         super(
             InquirerControl,
             self).__init__(
@@ -66,12 +87,14 @@ class InquirerControl(FormattedTextControl):
             _ = T.Selected if selected else T
             tokens.append(
                 (T.Selected if selected else T,
-                    " > " if selected else "   "))
+                    " > " if selected else "   ")
+            )
             if selected:
                 tokens.append((Token.SetCursorPosition, ""))
             tokens.append(
                 (T.Selected if selected else T, "%-24s" %
-                    label, select_item))
+                    label, select_item)
+            )
             tokens.append((T, "\n"))
 
         for i, choice in enumerate(self.choices):
@@ -82,46 +105,177 @@ class InquirerControl(FormattedTextControl):
         ]
 
     def get_selection(self):
-        return self.choices[self.selected_option_index]
+        key = self.choices[self.selected_option_index]
+        return key, self.availables
 
 
-ic = InquirerControl(*_get_conf())
+ic_init = InquirerControl(*_get_conf(".availables.json"))
+ic = ic_init
+
+
+def select_item(key, availables):
+    global confdict, ic
+
+    def get_ic_child(key, availables):
+        av_child = availables[key]
+        return InquirerControl(*_get_conf(av_child))
+
+    def guess():
+        global want_to_continue, ic, finished
+        want_to_continue = yes_no_dialog(
+            title="Dialog",
+            text="Do you want to configure other params?",
+            style=inquirer_style
+        )
+        if want_to_continue:
+            ic = ic_init
+        else:
+            finished = True
+
+    def conf_hw_params(key, availables):
+        global ic
+
+        def conf_rate(key, choices):
+            print(__name__)
+            guess()
+
+        def conf_format(key, choices):
+            print(__name__)
+            guess()
+
+        def conf_periodsize(key, choices):
+            print(__name__)
+            guess()
+
+        def conf_channels(key, choices):
+            print(__name__)
+            guess()
+
+        funcs = {
+            "rate": conf_rate,
+            "formatname": conf_format,
+            "periodsize": conf_periodsize,
+            "channels": conf_channels
+        }
+
+        ic = get_ic_child(key, availables)
+        task = funcs[key]
+        return task
+
+    def conf_filter_params(key, availables):
+        global ic
+
+        def conf_mu(key, choices):
+            print(__name__)
+            guess()
+
+        def conf_w_init(key, choices):
+            print(__name__)
+            guess()
+
+        funcs = {
+            "mu": conf_mu,
+            "w": conf_w_init
+        }
+
+        ic = get_ic_child(key, availables)
+        task = funcs[key]
+        return task
+
+    def conf_domain(key, availables):
+        print(__name__)
+        guess()
+
+    def conf_algo(key, availables):
+        print(__name__)
+        guess()
+
+    def select_device(key, availables):
+        global ic
+
+        def set_main(key):
+            print(__name__)
+            guess()
+
+        def set_monitor(key):
+            print(__name__)
+            guess()
+
+        def set_input(key):
+            print(__name__)
+            guess()
+
+        funcs = {
+            "main": set_main,
+            "monitor": set_monitor,
+            "input": set_input
+        }
+
+        ic = get_ic_child(key, availables)
+        task = funcs[key]
+        return task
+
+    conffuncs = {
+        "hw_params": conf_hw_params,
+        "filter_params": conf_filter_params,
+        "filter_domain": conf_domain,
+        "filter_algo": conf_algo,
+        "devices": select_device
+    }
+
+    ic = get_ic_child(key, availables)
+    task = conffuncs[key]
+    return task
+
+
+task_func = select_item
 
 
 def get_prompt_tokens():
+    global ic, want_to_continue, layout, task_func
     tokens = []
-    _ = Token
     tokens.append((Token.QuestionMark, "?"))
     tokens.append((Token.Question, " Configure about: "))
     if ic.answered:
-        tokens.append((Token.Answer, " " + ic.get_selection()))
-        selected_item(ic.get_selection())
+        selected, _ = ic.get_selection()
+        tokens.append((Token.Answer, " " + selected))
+        tokens.append((Token, "\n"))
+        task_child = task_func(*ic.get_selection())
+        new_hsc = init_hs_container()
+        layout = Layout(new_hsc)
+        if task_child:
+            task_func = task_child
     else:
         tokens.append((Token.Instruction, " (Use arrow keys)"))
     return [("class:" + pygments_token_to_classname(x[0]), str(x[1]))
             for x in tokens]
 
 
-HSContainer = HSplit(
-    [
-        Window(
-            height=D.exact(1),
-            content=FormattedTextControl(get_prompt_tokens)),
-        ConditionalContainer(
+def init_hs_container():
+    hsc = HSplit(
+        [
             Window(
-                ic,
-                width=D.exact(43),
-                height=D(min=3),
-                scroll_offsets=ScrollOffsets(top=1, bottom=1),
+                height=D.exact(1),
+                content=FormattedTextControl(
+                    text=get_prompt_tokens,
+                    key_bindings=kb)
             ),
-            filter=~IsDone(),
-        ),
-    ]
-)
+            ConditionalContainer(
+                Window(
+                    ic,
+                    width=D.exact(43),
+                    height=D(min=3),
+                    scroll_offsets=ScrollOffsets(top=1, bottom=1),
+                ),
+                filter=~IsDone(),
+            ),
+        ]
+    )
+    return hsc
+
+
+HSContainer = init_hs_container()
 layout = Layout(HSContainer)
-
-
-kb = KeyBindings()
 
 
 @kb.add("c-q", eager=True)
@@ -142,19 +296,10 @@ def move_cursor_up(event):
 
 @kb.add("enter", eager=True)
 def set_value(event):
+    global ic, tokens
     ic.answered = True
-    event.app.exit(None)
-
-
-inquirer_style = style_from_pygments_dict(
-    {
-        Token.QuestionMark: "#5F819D",
-        Token.Selected: "#FF9D00",
-        Token.Instruction: "",
-        Token.Answer: "#FF9D00 bold",
-        Token.Question: "bold",
-    }
-)
+    if not want_to_continue and finished:
+        event.app.exit(None)
 
 
 app = Application(

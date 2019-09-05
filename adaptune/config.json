@@ -1,5 +1,5 @@
 {
-    "params": {
+    "hw_params": {
         "rate": 48000,
         "formatname": "PCM_FORMAT_S16_LE", // as stated in 'alsaaudio.*PCM_FORMAT_XX*'
         "period_size": 1024,

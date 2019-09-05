@@ -11,7 +11,7 @@
         "See the documentation for details... ",
         "[commentjson - Add comments in JSON files](https://commentjson.readthedocs.io/en/latest/)"
     ],
-    "params": {
+    "hw_params": {
         "rate": [
             8000,
             16000,
@@ -48,7 +48,10 @@
             "PCM_FORMAT_U32_LE",
             "PCM_FORMAT_U8"
         ],
-        "period_size": 1024,
+        "period_size": {
+            "type": "int",
+            "section": ">0, preferred >32"
+        },
         "channels": [
             1,
             2,
@@ -87,8 +90,8 @@
         "FilterSSLMS"
     ],
     "devices": {
-        "main": "alsa.pcms(alsa.PCM_PLAYBACK)",
-        "monitor": "alsa.pcms(alsa.PCM_CAPTURE)",
-        "input": "alsa.pcms(alsa.CAPTURE)"
+        "main": "str",
+        "monitor": "str",
+        "input": "str"
     }
 }
