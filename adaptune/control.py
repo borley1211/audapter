@@ -114,7 +114,7 @@ ic = ic_init
 
 
 def select_item(key, availables):
-    global confdict, ic
+    global ic
 
     def get_ic_child(key, availables):
         av_child = availables[key]
@@ -232,7 +232,7 @@ task_func = select_item
 
 
 def get_prompt_tokens():
-    global ic, want_to_continue, layout, task_func
+    global ic, layout, task_func
     tokens = []
     tokens.append((Token.QuestionMark, "?"))
     tokens.append((Token.Question, " Configure about: "))
@@ -257,8 +257,7 @@ def init_hs_container():
             Window(
                 height=D.exact(1),
                 content=FormattedTextControl(
-                    text=get_prompt_tokens,
-                    key_bindings=kb)
+                    text=get_prompt_tokens)
             ),
             ConditionalContainer(
                 Window(
@@ -296,7 +295,7 @@ def move_cursor_up(event):
 
 @kb.add("enter", eager=True)
 def set_value(event):
-    global ic, tokens
+    global ic
     ic.answered = True
     if not want_to_continue and finished:
         event.app.exit(None)

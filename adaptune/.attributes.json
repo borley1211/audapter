@@ -19,38 +19,43 @@
             48000,
             96000
         ],
-        "formatname": [
-            "PCM_FORMAT_A_LAW",
-            "PCM_FORMAT_DSD_U16_LE",
-            "PCM_FORMAT_DSD_U32_BE",
-            "PCM_FORMAT_DSD_U32_LE",
-            "PCM_FORMAT_DSD_U8",
-            "PCM_FORMAT_FLOAT64_BE",
-            "PCM_FORMAT_FLOAT64_LE",
-            "PCM_FORMAT_FLOAT_BE",
-            "PCM_FORMAT_FLOAT_LE",
-            "PCM_FORMAT_GSM",
-            "PCM_FORMAT_IMA_ADPCM",
-            "PCM_FORMAT_MPEG",
-            "PCM_FORMAT_MU_LAW",
-            "PCM_FORMAT_S16_BE",
-            "PCM_FORMAT_S16_LE",
-            "PCM_FORMAT_S24_BE",
-            "PCM_FORMAT_S24_LE",
-            "PCM_FORMAT_S32_BE",
-            "PCM_FORMAT_S32_LE",
-            "PCM_FORMAT_S8",
-            "PCM_FORMAT_U16_BE",
-            "PCM_FORMAT_U16_LE",
-            "PCM_FORMAT_U24_BE",
-            "PCM_FORMAT_U24_LE",
-            "PCM_FORMAT_U32_BE",
-            "PCM_FORMAT_U32_LE",
-            "PCM_FORMAT_U8"
-        ],
+        "formatname": {
+            "alsa": [
+                "PCM_FORMAT_A_LAW",
+                "PCM_FORMAT_DSD_U16_LE",
+                "PCM_FORMAT_DSD_U32_BE",
+                "PCM_FORMAT_DSD_U32_LE",
+                "PCM_FORMAT_DSD_U8",
+                "PCM_FORMAT_FLOAT64_BE",
+                "PCM_FORMAT_FLOAT64_LE",
+                "PCM_FORMAT_FLOAT_BE",
+                "PCM_FORMAT_FLOAT_LE",
+                "PCM_FORMAT_GSM",
+                "PCM_FORMAT_IMA_ADPCM",
+                "PCM_FORMAT_MPEG",
+                "PCM_FORMAT_MU_LAW",
+                "PCM_FORMAT_S16_BE",
+                "PCM_FORMAT_S16_LE",
+                "PCM_FORMAT_S24_BE",
+                "PCM_FORMAT_S24_LE",
+                "PCM_FORMAT_S32_BE",
+                "PCM_FORMAT_S32_LE",
+                "PCM_FORMAT_S8",
+                "PCM_FORMAT_U16_BE",
+                "PCM_FORMAT_U16_LE",
+                "PCM_FORMAT_U24_BE",
+                "PCM_FORMAT_U24_LE",
+                "PCM_FORMAT_U32_BE",
+                "PCM_FORMAT_U32_LE",
+                "PCM_FORMAT_U8"
+            ],
+            "sounddevice": {
+                "type": "np.dtype"
+            }
+        },
         "period_size": {
             "type": "int",
-            "section": ">0, preferred >32"
+            "section": "lambda psize: True if psize > 0 else False"
         },
         "channels": [
             1,
@@ -64,10 +69,10 @@
     "filter_params": {
         "mu": {
             "type": "float",
-            "section": "0.0 < mu <= 1.0"
+            "section": "lambda mu: True if 0.0 < mu <= 1.0 else False"
         },
         "w": [
-            "/path/to/file",
+            "(/path/to/file)",
             "random",
             "zeros"
         ]

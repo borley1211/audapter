@@ -34,4 +34,9 @@
     "python.testing.nosetestsEnabled": false,
     "pythonTestExplorer.testFramework": "unittest",
     "python.testing.promptToConfigure": false,
+    "indentRainbow.ignoreErrorLanguages": [
+        "markdown",
+        "python",
+        "latex"
+    ]
 }

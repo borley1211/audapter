@@ -10,8 +10,7 @@ import librosa as rosa
 import numpy as np
 from matplotlib import animation
 from matplotlib import pyplot as plt
-from . import passalsa
-from .config import params, dev
+from . import passalsa, params, dev
 
 m_params = params.copy()
 # m_params["channels"] = 1
@@ -66,3 +65,6 @@ def monitor(device=dev["monitor"], run_time: int = None) -> None:
             t = time()
         input("Enter to close!")
     plt.close()
+
+
+__all__ = ['monitor']
