@@ -109,7 +109,7 @@ class InquirerControl(FormattedTextControl):
         return key, self.availables
 
 
-ic_init = InquirerControl(*_get_conf(".availables.json"))
+ic_init = InquirerControl(*_get_conf(".attributes.json"))
 ic = ic_init
 
 

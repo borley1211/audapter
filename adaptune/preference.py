@@ -32,7 +32,7 @@ class InquirerControl(FormattedTextControl):
     selected_option_index = 0
     answered = False
 
-    def __init__(self, choices, **kwargs):
+    def __init__(self, choices: List, **kwargs):
         self.choices = choices
         super(
             InquirerControl,
@@ -44,14 +44,14 @@ class InquirerControl(FormattedTextControl):
     def choice_count(self):
         return len(self.choices)
 
-    def _get_choiced_tokens(self):
+    def _get_choiced_tokens(self) -> List:
         tokens = []
         T = Token
 
         def _append(index, label):
             selected = index == self.selected_option_index
 
-            def select_item(app, mouse_event):
+            def _select_item(app, mouse_event):
                 self.selected_option_index = index
                 self.answered = True
 
@@ -65,9 +65,8 @@ class InquirerControl(FormattedTextControl):
                     (Token.SetCursorPosition, "")
                 )
             tokens.append(
-                (T.Selected if selected else T,
-                 "%-24s" % label,
-                 select_item)
+                (T.Selected if selected else T, "%-24s" %
+                 label, _select_item)
             )
             tokens.append((T, "\n"))
 
@@ -91,7 +90,6 @@ class ConfigurationApp(Application):
     finished = False
     kb = KeyBindings()
     breadcrumb = ""
-    tasks = None
     inquirer_style = style_from_pygments_dict(
         {
             Token.QuestionMark: "#5F819D",
@@ -125,7 +123,7 @@ class ConfigurationApp(Application):
         input_method=None,
         output_method=None
     ):
-        self.confdict, _ = self._get_conf("config.json")
+        self.confdict, _choices = self._get_conf("config.json")
         self.attributes, self.choices_init = self._get_conf(".attributes.json")
         self.choices = self.choices_init
 
@@ -160,7 +158,9 @@ class ConfigurationApp(Application):
             input=input_method,
             output=output_method)
 
-    def _get_conf(self, configobj: Union[str, Dict, List]) -> Tuple[Dict, List]:
+    def _get_conf(
+            self, configobj: Union[str, Dict, List]) -> Tuple[Dict, List]:
+        print_formatted_text(configobj)
         _config: Dict = dict()
         keylist: List = []
 
@@ -175,8 +175,10 @@ class ConfigurationApp(Application):
                 else:
                     pass
 
-                if key == "type" or "section":
-                    newd[key] = eval(str(val))
+                if key == "type":
+                    newd[key] = eval(val)
+                elif key == "section":
+                    exec("newd[{0}] = {1}".format(key, val))
                 elif newd[key] == "(/path/to/file)":
                     newd[key] = {
                         "name": newd[key],
@@ -189,14 +191,13 @@ class ConfigurationApp(Application):
 
         if isinstance(configobj, str):
             with open(
-                os.path.join(os.path.dirname(__file__), configobj),
+                os.path.join(os.path.dirname(__file__), str(configobj)),
                 'r',
                 encoding='UTF-8'
             ) as file:
                 _config = commentjson.load(file)
         elif isinstance(configobj, dict):
             _config = configobj
-            keylist = list(_config.keys())
         elif isinstance(configobj, list):
             keylist = configobj
         else:
@@ -205,10 +206,11 @@ class ConfigurationApp(Application):
         config = _config
 
         if isinstance(config, dict):
+            keylist = list(config.keys())
             keylist = [key for key in keylist if key != '__description__']
+            # config = _eval_values(config)
 
-        if isinstance(_config, dict):
-            config = _eval_values(config)
+        commentjson.dumps(config, indent=4)
 
         return config, keylist
 
@@ -274,9 +276,9 @@ class ConfigurationApp(Application):
             if self.breadcrumb:
                 self.breadcrumb += " >"
                 tokens.append((Token.Breadcrumb, self.breadcrumb))
-            tokens.append((Token.Answer, " " + selected))
+            tokens.append((Token.Answer, " " + str(selected)))
             tokens.append((Token, "\n"))
-            self.breadcrumb += " " + selected
+            self.breadcrumb += " " + str(selected)
             self.select_item(selected, self.attributes)
         else:
             tokens.append((Token.Instruction, " (Use arrow keys)"))
@@ -287,7 +289,14 @@ class ConfigurationApp(Application):
 
         def get_ic_child(key, attributes):
             attr_child = attributes[key]
-            self.attributes, self.choices = self._get_conf(attr_child)
+
+            if isinstance(attr_child, dict):
+                self.attributes, self.choices = (
+                    attr_child, list(attr_child.keys()))
+            elif isinstance(attr_child, list):
+                self.attributes = None
+                self.choices = attr_child
+
             return InquirerControl(self.choices)
 
         def guess():
@@ -301,117 +310,51 @@ class ConfigurationApp(Application):
             else:
                 self.finished = True
 
-        def conf_hw_params(key, attributes):
-
-            def conf_rate(key, choices):
-                print(__name__)
+        def _pref_conf(choice, key):
+            # hw_params
+            if choice == "rate":
+                self.confdict["hw_params"]["rate"] = key
+                guess()
+            elif choice == "alsa" or "sounddevice":
+                self.confdict["hw_params"]["fomatname"] = key
+                guess()
+            elif choice == "periodsize":
+                self.confdict["hw_params"]["periodsize"] = key
+                guess()
+            elif choice == "channels":
+                self.confdict["hw_params"]["channels"] = key
                 guess()
 
-            def conf_format(key, choices):
-                print(__name__)
+            # filter_params
+            elif choice == "mu":
+                self.confdict["filter_params"]["mu"] = key
+                guess()
+            elif choice == "w":
+                self.confdict["filter_params"]["w"] = key
                 guess()
 
-            def conf_periodsize(key, choices):
-                print(__name__)
+            elif choice == "filter_domain":
+                self.confdict["filter_domain"] = key
                 guess()
 
-            def conf_channels(key, choices):
-                print(__name__)
+            elif choice == "filter_algo":
+                self.confdict["filter_algo"] = key
                 guess()
 
-            cfuncdict = {
-                "rate": conf_rate,
-                "formatname": conf_format,
-                "periodsize": conf_periodsize,
-                "channels": conf_channels
-            }
+            # devices
+            elif choice == "main" or "monitor" or "input":
+                self.confdict["devices"][choice] = key
+                guess()
 
-            if self.tasks is cfuncdict:
-                self.tasks[self.current_choice](
-                    key,
-                    attributes)
             else:
-                self.ic = get_ic_child(key, attributes)
-                self.current_choice = key
-                self.tasks = cfuncdict
+                return False
 
-        def conf_filter_params(key, attributes):
+        choice = self.current_choice
+        res = _pref_conf(choice, key)
 
-            def conf_mu(key, choices):
-                print(__name__)
-                guess()
-
-            def conf_w_init(key, choices):
-                print(__name__)
-                guess()
-
-            cfuncdict = {
-                "mu": conf_mu,
-                "w": conf_w_init
-            }
-
-            if self.tasks is cfuncdict:
-                self.tasks[self.current_choice](
-                    key,
-                    attributes)
-            else:
-                self.ic = get_ic_child(key, attributes)
-                self.current_choice = key
-                self.tasks = cfuncdict
-
-        def conf_domain(key, attributes):
-            print(__name__)
-            guess()
-
-        def conf_algo(key, attributes):
-            print(__name__)
-            guess()
-
-        def select_device(key, attributes):
-
-            def set_main(key):
-                print(__name__)
-                guess()
-
-            def set_monitor(key):
-                print(__name__)
-                guess()
-
-            def set_input(key):
-                print(__name__)
-                guess()
-
-            cfuncdict = {
-                "main": set_main,
-                "monitor": set_monitor,
-                "input": set_input
-            }
-
-            if self.tasks is cfuncdict:
-                self.tasks[self.current_choice](
-                    key,
-                    attributes)
-            else:
-                self.ic = get_ic_child(key, attributes)
-                self.current_choice = key
-                self.tasks = cfuncdict
-
-        funcdict = {
-            "hw_params": conf_hw_params,
-            "filter_params": conf_filter_params,
-            "filter_domain": conf_domain,
-            "filter_algo": conf_algo,
-            "devices": select_device
-        }
-
-        if self.tasks is funcdict:
-            self.tasks[self.current_choice](
-                key,
-                attributes)
-        else:
+        if res is False:
             self.ic = get_ic_child(key, attributes)
             self.current_choice = key
-            self.tasks = funcdict
 
 
 if __name__ == "__main__":
