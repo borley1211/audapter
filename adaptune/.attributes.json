@@ -72,7 +72,7 @@
             "section": "lambda mu: True if 0.0 < mu <= 1.0 else False"
         },
         "w": [
-            "(/path/to/file)",
+            "(path/to/file)",
             "random",
             "zeros"
         ]

@@ -30,6 +30,7 @@ commentjson = "*"
 prompt-toolkit = "*"
 sounddevice = "*"
 pysoundfile = "*"
+yaspin = "*"
 
 [requires]
 python_version = "3.7"

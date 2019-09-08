@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
+import pathlib
 import sys
-from typing import Any, Tuple, Union, Dict, List
+from typing import Dict, List, Tuple, Union
+import time
 
-import alsaaudio as alsa
 import commentjson
 import numpy as np
 import sounddevice as sd
-from padasip import padasip as pa
+import yaspin
 from prompt_toolkit import Application, print_formatted_text, prompt
-from prompt_toolkit.application import get_app
-from prompt_toolkit.completion import PathCompleter
+from prompt_toolkit.completion import FuzzyCompleter, PathCompleter
 from prompt_toolkit.enums import EditingMode
 from prompt_toolkit.filters import Condition, IsDone
 from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.eventloop import inputhook
 from prompt_toolkit.layout import (ConditionalContainer, D,
                                    FormattedTextControl, HSplit, Layout,
                                    ScrollOffsets, Window)
@@ -179,11 +180,9 @@ class ConfigurationApp(Application):
                     newd[key] = eval(val)
                 elif key == "section":
                     exec("newd[{0}] = {1}".format(key, val))
-                elif newd[key] == "(/path/to/file)":
-                    newd[key] = {
-                        "name": newd[key],
-                        "method": PathCompleter()
-                    }
+                elif newd[key] == "w":
+                    newd[key] = [
+                        PathCompleter() if item == "(path/to/file)" else item for item in newd[key]]
                 else:
                     newd[key] = val
 
@@ -262,7 +261,7 @@ class ConfigurationApp(Application):
                         height=D(min=3),
                         scroll_offsets=ScrollOffsets(top=1, bottom=1),
                     ),
-                    filter=~IsDone(),
+                    filter=~IsDone() & Condition(lambda: self.finished),
                 ),
             ]
         )
@@ -299,9 +298,9 @@ class ConfigurationApp(Application):
 
             return InquirerControl(self.choices)
 
-        def guess():
+        def guess(title="[ Dialog ]"):
             self.want_to_continue = yes_no_dialog(
-                title="Dialog",
+                title=title,
                 text="Do you want to configure other params?",
                 style=self.inquirer_style
             )
@@ -310,53 +309,103 @@ class ConfigurationApp(Application):
             else:
                 self.finished = True
 
-        def _pref_conf(choice, key):
+        def _work_before_node(choices):
+
+            # if isinstance(choices, dict):
+            if "type" in choices:
+                notice = "Enter {}".format(choices["type"])
+
+                def _validfunc(inputs):
+                    _notice_add = ""
+                    if "section" in choices:
+                        if not choices["section"](inputs):
+                            raise ValidationError(
+                                message="This input does not meet the requirements as {}".format(
+                                    choices["section"])
+                            )
+                        elif not isinstance(inputs, choices["type"]):
+                            raise ValidationError(
+                                message="This input does not contain the type as {}".format(
+                                    choices["type"])
+                            )
+                        else:
+                            return inputs
+                    else:
+                        if not isinstance(inputs, choices["type"]):
+                            raise ValidationError(
+                                message="This input does not contain the type as {}".format(
+                                    choices["type"])
+                            )
+                        else:
+                            return inputs
+
+                validator = Validator.from_callable(
+                    _validfunc,
+                    move_cursor_to_end=True
+                )
+                notice += ":"
+                res = prompt(notice,
+                             validator=validator,
+                             completer=FuzzyCompleter())
+
+            # else: ...
+            elif choices == "main" or "monitor" or "input":
+                snddevinfo = sd.query_devices()
+                devlist = [snddevinfo[i]["name"] for i in len(snddevinfo)]
+                self.ic = InquirerControl(devlist)
+
+            elif isinstance(choices, PathCompleter):
+                res = prompt("Enter path:", completer=choices)
+                p = pathlib.Path(str(res))
+                res = str(p.resolve())
+
+            # finally:(isinstance(choices, list) is True:)
+            else:
+                self.ic = get_ic_child(key, attributes)
+                self.current_choice = key
+                res = None
+
+            return res
+
+        def _setval_if_key_is_node(key_recent, selected):
             # hw_params
-            if choice == "rate":
-                self.confdict["hw_params"]["rate"] = key
-                guess()
-            elif choice == "alsa" or "sounddevice":
-                self.confdict["hw_params"]["fomatname"] = key
-                guess()
-            elif choice == "periodsize":
-                self.confdict["hw_params"]["periodsize"] = key
-                guess()
-            elif choice == "channels":
-                self.confdict["hw_params"]["channels"] = key
-                guess()
+            if key_recent == "rate":
+                self.confdict["hw_params"]["rate"] = selected
+            elif key_recent == "alsa" or "sounddevice":
+                self.confdict["hw_params"]["formatname"] = selected
+            elif key_recent == "periodsize":
+                self.confdict["hw_params"]["periodsize"] = selected
+            elif key_recent == "channels":
+                self.confdict["hw_params"]["channels"] = selected
 
             # filter_params
-            elif choice == "mu":
-                self.confdict["filter_params"]["mu"] = key
-                guess()
-            elif choice == "w":
-                self.confdict["filter_params"]["w"] = key
-                guess()
+            elif key_recent == "mu":
+                self.confdict["filter_params"]["mu"] = selected
+            elif key_recent == "w":
+                self.confdict["filter_params"]["w"] = selected
 
-            elif choice == "filter_domain":
-                self.confdict["filter_domain"] = key
-                guess()
+            # (as below)
+            elif key_recent == "filter_domain":
+                self.confdict["filter_domain"] = selected
 
-            elif choice == "filter_algo":
-                self.confdict["filter_algo"] = key
-                guess()
+            # (as below)
+            elif key_recent == "filter_algo":
+                self.confdict["filter_algo"] = selected
 
             # devices
-            elif choice == "main" or "monitor" or "input":
-                self.confdict["devices"][choice] = key
-                guess()
+            elif key_recent == "main" or "monitor" or "input":
+                self.confdict["devices"][key_recent] = selected
 
-            else:
-                return False
+            # [post process]
+            guess()
 
-        choice = self.current_choice
-        res = _pref_conf(choice, key)
-
-        if res is False:
-            self.ic = get_ic_child(key, attributes)
-            self.current_choice = key
+        result = _work_before_node(attributes)
+        if result:
+            key_recent = self.current_choice
+            _setval_if_key_is_node(key_recent, key)
 
 
 if __name__ == "__main__":
-    app = ConfigurationApp()
+    with yaspin.yaspin():
+        app = ConfigurationApp()
     app.run()
