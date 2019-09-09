@@ -1,39 +1,51 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os
-import pathlib
-import sys
-from typing import Dict, List, Tuple, Union
-import time
+from yaspin import yaspin
+from yaspin.termcolor import colored
 
-import commentjson
-import numpy as np
-import sounddevice as sd
-import yaspin
-from prompt_toolkit import Application, print_formatted_text, prompt
-from prompt_toolkit.completion import FuzzyCompleter, PathCompleter
-from prompt_toolkit.enums import EditingMode
-from prompt_toolkit.filters import Condition, IsDone
-from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.eventloop import inputhook
-from prompt_toolkit.layout import (ConditionalContainer, D,
-                                   FormattedTextControl, HSplit, Layout,
-                                   ScrollOffsets, Window)
-from prompt_toolkit.shortcuts import yes_no_dialog
-from prompt_toolkit.styles import (pygments_token_to_classname,
-                                   style_from_pygments_dict)
-from prompt_toolkit.validation import ValidationError, Validator
-from pygments.token import Token
+with yaspin(text=colored("Preparing. Wait a minute...", color="cyan", attrs=["bold"])):
+    import os
+    import pathlib
+    import sys
+    from typing import Dict, List, Tuple, Union
+
+    import commentjson
+    import numpy as np
+    import sounddevice as sd
+    from prompt_toolkit import (
+        Application,
+        print_formatted_text,
+        prompt,
+        PromptSession)
+    from prompt_toolkit.completion import FuzzyCompleter, PathCompleter
+    from prompt_toolkit.enums import EditingMode
+    from prompt_toolkit.filters import IsDone, Condition
+    from prompt_toolkit.key_binding import KeyBindings
+    from prompt_toolkit.layout import (
+        ConditionalContainer,
+        D,
+        FormattedTextControl,
+        HSplit,
+        Layout,
+        ScrollOffsets,
+        Window,
+        DummyControl)
+    from prompt_toolkit.widgets import Dialog, Label, Button
+    from prompt_toolkit.styles import (
+        pygments_token_to_classname,
+        style_from_pygments_dict)
+    from prompt_toolkit.validation import ValidationError, Validator
+    from pygments.token import Token
 
 # Measure for RecursionError
-sys.setrecursionlimit(10 ** 4)
+sys.setrecursionlimit(2000)
 
 
 class InquirerControl(FormattedTextControl):
     selected_option_index = 0
     answered = False
 
-    def __init__(self, choices: List, **kwargs):
+    def __init__(self, choices, **kwargs):
         self.choices = choices
         super(
             InquirerControl,
@@ -101,6 +113,11 @@ class ConfigurationApp(Application):
             Token.Breadcrumb: "#eeeeee",
         }
     )
+    confdict: Dict = {}
+    attributes: Dict = {}
+    choices: List = []
+    hs_container = DummyControl()
+    current_select = None
 
     def __init__(
         self,
@@ -115,7 +132,7 @@ class ConfigurationApp(Application):
         editing_mode=EditingMode.VI,
         erase_when_done=False,
         reverse_vi_search_direction=False,
-        min_redraw_interval=None,
+        min_redraw_interval=0.1,
         max_render_postpone_time=0,
         on_reset=None,
         on_invalidate=None,
@@ -125,7 +142,9 @@ class ConfigurationApp(Application):
         output_method=None
     ):
         self.confdict, _choices = self._get_conf("config.json")
-        self.attributes, self.choices_init = self._get_conf(".attributes.json")
+        self.attributes_init, self.choices_init = self._get_conf(
+            ".attributes.json")
+        self.attributes = self.attributes_init
         self.choices = self.choices_init
 
         self._conf_kb()
@@ -159,60 +178,6 @@ class ConfigurationApp(Application):
             input=input_method,
             output=output_method)
 
-    def _get_conf(
-            self, configobj: Union[str, Dict, List]) -> Tuple[Dict, List]:
-        print_formatted_text(configobj)
-        _config: Dict = dict()
-        keylist: List = []
-
-        def _eval_values(dictionary: Dict) -> Dict:
-            newd = {}
-
-            for key, val in dictionary.items():
-                print_formatted_text(val)
-
-                if isinstance(val, dict):
-                    val = _eval_values(val)     # process recursively
-                else:
-                    pass
-
-                if key == "type":
-                    newd[key] = eval(val)
-                elif key == "section":
-                    exec("newd[{0}] = {1}".format(key, val))
-                elif newd[key] == "w":
-                    newd[key] = [
-                        PathCompleter() if item == "(path/to/file)" else item for item in newd[key]]
-                else:
-                    newd[key] = val
-
-            return newd
-
-        if isinstance(configobj, str):
-            with open(
-                os.path.join(os.path.dirname(__file__), str(configobj)),
-                'r',
-                encoding='UTF-8'
-            ) as file:
-                _config = commentjson.load(file)
-        elif isinstance(configobj, dict):
-            _config = configobj
-        elif isinstance(configobj, list):
-            keylist = configobj
-        else:
-            pass
-
-        config = _config
-
-        if isinstance(config, dict):
-            keylist = list(config.keys())
-            keylist = [key for key in keylist if key != '__description__']
-            # config = _eval_values(config)
-
-        commentjson.dumps(config, indent=4)
-
-        return config, keylist
-
     def _conf_kb(self):
         kb = self.kb
 
@@ -237,7 +202,7 @@ class ConfigurationApp(Application):
             if not self.want_to_continue and self.finished:
                 event.app.exit(None)
             else:
-                self._set_layout()
+                pass
 
         self.kb = kb
 
@@ -245,13 +210,13 @@ class ConfigurationApp(Application):
         self._conf_hs_container()
         self.layout = Layout(self.hs_container)
 
-    def _conf_hs_container(self):
+    def _conf_hs_container(self, additional=Window(DummyControl())):
         self.hs_container = HSplit(
             [
                 Window(
                     height=D.exact(1),
                     content=FormattedTextControl(
-                        self.get_prompt_tokens()
+                        self.get_prompt_tokens
                     )
                 ),
                 ConditionalContainer(
@@ -261,15 +226,69 @@ class ConfigurationApp(Application):
                         height=D(min=3),
                         scroll_offsets=ScrollOffsets(top=1, bottom=1),
                     ),
-                    filter=~IsDone() & Condition(lambda: self.finished),
+                    filter=~IsDone() | ~Condition(lambda: self.finished),
                 ),
+                additional
             ]
         )
+
+    def _get_conf(
+            self, configobj: Union[str, Dict, List]) -> Tuple[Dict, List]:
+        _config: Dict = dict()
+        keylist: List = []
+
+        def _eval_values(dictionary: Dict) -> Dict:
+            newd = {}
+
+            for key, val in dictionary.items():
+
+                if isinstance(val, dict):
+                    val = _eval_values(val)     # process recursively
+                else:
+                    pass
+
+                if key == "type":
+                    newd[key] = eval(val)
+                elif key == "section":
+                    newval = None
+                    exec("newval = {}".format(val))
+                    newd.update(section=newval)
+                elif key == "w":
+                    newd[key] = [
+                        PathCompleter() if item == "(path/to/file)" else item for item in val]
+                else:
+                    newd[key] = val
+
+            return newd
+
+        if isinstance(configobj, str):
+            with open(
+                os.path.join(os.path.dirname(__file__), str(configobj)),
+                'r',
+                encoding='UTF-8'
+            ) as file:
+                _config = commentjson.load(file)
+        elif isinstance(configobj, dict):
+            _config = configobj
+        elif isinstance(configobj, list):
+            keylist = configobj
+        else:
+            pass
+
+        config = _config
+
+        if isinstance(config, dict):
+            keylist = list(config.keys())
+            keylist = [key for key in keylist if key != '__description__']
+            config = _eval_values(config)
+
+        return config, keylist
 
     def get_prompt_tokens(self):
         tokens = []
         tokens.append((Token.QuestionMark, "?"))
         tokens.append((Token.Question, " Configure about: "))
+
         if self.ic.answered:
             selected = self.ic.get_selection()
             if self.breadcrumb:
@@ -279,8 +298,10 @@ class ConfigurationApp(Application):
             tokens.append((Token, "\n"))
             self.breadcrumb += " " + str(selected)
             self.select_item(selected, self.attributes)
+            self.invalidate()
         else:
             tokens.append((Token.Instruction, " (Use arrow keys)"))
+
         return [("class:" + pygments_token_to_classname(x[0]), str(x[1]))
                 for x in tokens]
 
@@ -293,77 +314,113 @@ class ConfigurationApp(Application):
                 self.attributes, self.choices = (
                     attr_child, list(attr_child.keys()))
             elif isinstance(attr_child, list):
-                self.attributes = None
-                self.choices = attr_child
+                self.attributes = self.choices = attr_child
 
             return InquirerControl(self.choices)
 
-        def guess(title="[ Dialog ]"):
-            self.want_to_continue = yes_no_dialog(
+        def guess(title="Dialog"):
+            nonlocal self
+
+            def _yes_handler() -> None:
+                self.want_to_continue = True
+
+            def _no_handler() -> None:
+                self.want_to_continue = False
+
+            boolean_dialog = Dialog(
                 title=title,
-                text="Do you want to configure other params?",
-                style=self.inquirer_style
+                body=Label(text="Do you want to configure other params?"),
+                buttons=[
+                    Button(text="Yes", handler=_yes_handler),
+                    Button(text="No", handler=_no_handler)
+                ]
             )
+            self.reset()
+            self.ic = InquirerControl([""])
+            self.layout = Layout(boolean_dialog)
+            self.invalidate()
+
             if self.want_to_continue:
+                self.attributes = self.attributes_init
+                self.choices = self.choices_init
                 self.ic = self.ic_init
+                self._set_layout()
+                super().__init__(layout=self.layout)
             else:
                 self.finished = True
 
-        def _work_before_node(choices):
+        def _work_before_node(key, attr):
 
-            # if isinstance(choices, dict):
-            if "type" in choices:
-                notice = "Enter {}".format(choices["type"])
+            if isinstance(attr, dict):
 
-                def _validfunc(inputs):
-                    _notice_add = ""
-                    if "section" in choices:
-                        if not choices["section"](inputs):
-                            raise ValidationError(
-                                message="This input does not meet the requirements as {}".format(
-                                    choices["section"])
-                            )
-                        elif not isinstance(inputs, choices["type"]):
-                            raise ValidationError(
-                                message="This input does not contain the type as {}".format(
-                                    choices["type"])
-                            )
+                # if "this branch has only nodes":
+                if "type" in attr:
+                    notice = "Enter {}".format(attr["type"])
+
+                    def _validfunc(inputs):
+                        if "section" in attr:
+                            if not attr["section"](inputs):
+                                raise ValidationError(
+                                    message="This input does not meet the requirements as {}".format(
+                                        attr["section"])
+                                )
+                            elif not isinstance(inputs, attr["type"]):
+                                raise ValidationError(
+                                    message="This input does not contain the type as {}".format(
+                                        attr["type"])
+                                )
+                            else:
+                                return inputs
                         else:
-                            return inputs
-                    else:
-                        if not isinstance(inputs, choices["type"]):
-                            raise ValidationError(
-                                message="This input does not contain the type as {}".format(
-                                    choices["type"])
-                            )
-                        else:
-                            return inputs
+                            if not isinstance(inputs, attr["type"]):
+                                raise ValidationError(
+                                    message="This input does not contain the type as {}".format(
+                                        attr["type"])
+                                )
+                            else:
+                                return inputs
 
-                validator = Validator.from_callable(
-                    _validfunc,
-                    move_cursor_to_end=True
-                )
-                notice += ":"
-                res = prompt(notice,
-                             validator=validator,
-                             completer=FuzzyCompleter())
+                    validator = Validator.from_callable(
+                        _validfunc,
+                        move_cursor_to_end=True
+                    )
+                    notice += ":"
+                    res = prompt(notice,
+                                 validator=validator,
+                                 completer=FuzzyCompleter())
 
-            # else: ...
-            elif choices == "main" or "monitor" or "input":
-                snddevinfo = sd.query_devices()
-                devlist = [snddevinfo[i]["name"] for i in len(snddevinfo)]
-                self.ic = InquirerControl(devlist)
+                # else(=="this branch has some branches"):
+                # special case in "device"
+                elif key in ["main", "monitor", "input"]:
+                    snddevs = list(sd.query_devices())
+                    devlist = [devinfo["name"] for devinfo in snddevs]
+                    self.ic = InquirerControl(devlist)
+                    self.current_select = key
 
-            elif isinstance(choices, PathCompleter):
-                res = prompt("Enter path:", completer=choices)
+                    _additional = Window(
+                        height=D(min=3),
+                        content=FormattedTextControl(
+                            text="[Details]\n" + sd.query_devices()
+                        )
+                    )
+                    self._conf_hs_container(additional=_additional)
+                    self.layout = Layout(self.hs_container)
+                    res = False
+
+                # other cases
+                else:
+                    self.ic = get_ic_child(key, attr)
+                    self.current_select = key
+                    self._set_layout()
+                    res = False
+
+            elif isinstance(attr, list):
+                res = key
+
+            elif isinstance(attr, PathCompleter):
+                res = prompt("Enter path:", completer=attr)
                 p = pathlib.Path(str(res))
                 res = str(p.resolve())
-
-            # finally:(isinstance(choices, list) is True:)
-            else:
-                self.ic = get_ic_child(key, attributes)
-                self.current_choice = key
-                res = None
 
             return res
 
@@ -399,13 +456,12 @@ class ConfigurationApp(Application):
             # [post process]
             guess()
 
-        result = _work_before_node(attributes)
+        result = _work_before_node(key, attributes)
         if result:
-            key_recent = self.current_choice
-            _setval_if_key_is_node(key_recent, key)
+            key_prev = self.current_select
+            _setval_if_key_is_node(key_prev, result)
 
 
 if __name__ == "__main__":
-    with yaspin.yaspin():
-        app = ConfigurationApp()
+    app = ConfigurationApp()
     app.run()

@@ -95,8 +95,8 @@
         "FilterSSLMS"
     ],
     "devices": {
-        "main": "str",
-        "monitor": "str",
-        "input": "str"
+        "main": "output",
+        "monitor": "input",
+        "input": "input"
     }
 }
