@@ -8,7 +8,7 @@ import argparse
 import sounddevice as sd
 import soundfile as sf
 
-import tools
+from adaptune.inpulseres import tools
 
 
 class AudioPlayer:

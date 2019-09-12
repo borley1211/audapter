@@ -10,8 +10,7 @@ import numpy as np
 import soundfile as sf
 from scipy import fftpack
 
-import player
-import tools
+from adaptune.inpulseres import player, tools
 
 
 def sweptsine(num=2**16, repeat=3, gain=50):
@@ -26,19 +25,19 @@ def sweptsine(num=2**16, repeat=3, gain=50):
     Returns:
         (ndarray, ndarray, int, int) -- (Swept-Sine, Invert Swept-Sine(freq), 'num', 'repeat')
     '''
-    eff = num//(2**2)
+    eff = num // (2**2)
     k = np.arange(0, num)
 
     ss_omega = np.zeros(num, dtype=np.complex_)
-    ss_exp = np.exp(-1j * 4 * np.pi * eff * (k/num)**2)
+    ss_exp = np.exp(-1j * 4 * np.pi * eff * (k / num)**2)
 
-    ss_omega[:num//2+1] = ss_exp[:num//2+1]
-    ss_omega[num//2+1:] = np.conj(ss_exp[1:num//2][::-1])
+    ss_omega[:num // 2 + 1] = ss_exp[:num // 2 + 1]
+    ss_omega[num // 2 + 1:] = np.conj(ss_exp[1:num // 2][::-1])
 
     ss_inv_omega = np.conj(ss_omega)
 
     ss_real = np.real(fftpack.ifft(ss_omega))
-    ss_real = gain*np.roll(ss_real, num//2 - eff)
+    ss_real = gain * np.roll(ss_real, num // 2 - eff)
     ss_real = np.r_[np.tile(ss_real, repeat), np.zeros(num)]
 
     return ss_real, ss_inv_omega, num, repeat
@@ -56,10 +55,10 @@ def averaging(rec, num, repeat):
     Returns:
         ndarray -- averaged data
     '''
-    rec_ave = np.zeros((num-1, rec.ndim))
-    for n in range(0, num*repeat, num):
-        rec_ave += rec[n:n+num-1]
-    return rec_ave/(repeat)
+    rec_ave = np.zeros((num - 1, rec.ndim))
+    for n in range(0, num * repeat, num):
+        rec_ave += rec[n:n + num - 1]
+    return rec_ave / (repeat)
 
 
 def main():
@@ -101,13 +100,13 @@ def main():
         plt.pause(1)
 
         INV = np.tile(INV[:-1], (REC.ndim, 1)).transpose()
-        TF = INV*fftpack.fft(REC)
+        TF = INV * fftpack.fft(REC)
         plt.subplot(X, Y, 3)
         plt.plot(
             np.array(
                 [np.linspace(0, F_S, NUM) for _ in range(TF.ndim)]
             ).transpose()[:-1],
-            20*np.log10(np.abs(TF)/np.max(np.abs(TF)))
+            20 * np.log10(np.abs(TF) / np.max(np.abs(TF)))
         )
         plt.xscale('log')
         plt.title('Transfer Function')
@@ -118,9 +117,9 @@ def main():
 
         IR = fftpack.ifft(TF)
         for i in range(IR.ndim):
-            plt.subplot(X, Y, 4+i)
+            plt.subplot(X, Y, 4 + i)
             plt.title('Impulse Response')
-            plt.plot(IR[NUM//2:, i].real, label='Ch {}'.format(i+1))
+            plt.plot(IR[NUM // 2:, i].real, label='Ch {}'.format(i + 1))
             plt.legend()
             plt.grid()
         plt.tight_layout()
@@ -130,7 +129,8 @@ def main():
         if os.path.isdir('./Properties/') is False:
             os.makedirs('./Properties/')
         np.savez(
-            './Properties/dev{input}_{output}.npz'.format(input=DEV.device[0], output=DEV.device[1]),
+            './Properties/dev{input}_{output}.npz'.format(
+                input=DEV.device[0], output=DEV.device[1]),
             [TF, IR])
 
     except KeyboardInterrupt:

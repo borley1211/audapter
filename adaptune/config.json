@@ -1,16 +1,16 @@
 {
     "hw_params": {
         "rate": 48000,
-        "formatname": "PCM_FORMAT_S16_LE", // as stated in 'alsaaudio.*PCM_FORMAT_XX*'
+        "formatname": "float64",
         "period_size": 1024,
         "channels": 2
     },
     "filter_params": {
         "mu": 0.01,
-        "w": "zeros" // specify '(/path/to/file)', 'random', or 'zeros'
+        "w": "zeros"
     },
     "filter_domain": "time",
-    "filter_algo": "FilterNLMS", // select algorithm from [Padasip — Padasip 1.1.1 documentation](https://matousc89.github.io/padasip/)
+    "filter_algo": "FilterNLMS",
     "devices": {
         "main": "default",
         "monitor": "monitor",

@@ -49,9 +49,20 @@
                 "PCM_FORMAT_U32_LE",
                 "PCM_FORMAT_U8"
             ],
-            "sounddevice": {
-                "type": "np.dtype"
-            }
+            "sounddevice": [
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "uint8",
+                "uint16",
+                "uint32",
+                "uint64",
+                "float16",
+                "float32",
+                "float64",
+                "float128"
+            ]
         },
         "period_size": {
             "type": "int",
@@ -72,7 +83,6 @@
             "section": "lambda mu: True if 0.0 < mu <= 1.0 else False"
         },
         "w": [
-            "(path/to/file)",
             "random",
             "zeros"
         ]

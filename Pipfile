@@ -17,6 +17,7 @@ python-language-server = "*"
 pip = "*"
 doc8 = "*"
 ptpython = "*"
+pyls = "*"
 
 [packages]
 pip = "*"
@@ -27,10 +28,10 @@ pyalsaaudio = "*"
 librosa = "*"
 padasip = "*"
 commentjson = "*"
-prompt-toolkit = "*"
 sounddevice = "*"
 pysoundfile = "*"
 yaspin = "*"
+prompt-toolkit = "*"
 
 [requires]
 python_version = "3.7"
