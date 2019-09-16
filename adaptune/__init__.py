@@ -11,8 +11,8 @@ from . import core, passalsa, preferences
 from ._monitor import monitor
 
 with open(
-    os.path.join(os.path.dirname(__file__), "config.json"), 'r', encoding='UTF-8'
-) as file:
+    os.path.join(os.path.dirname(__file__), "config.json"),
+        'r', encoding='UTF-8') as file:
     config = commentjson.load(file)
 
 params = config["params"]

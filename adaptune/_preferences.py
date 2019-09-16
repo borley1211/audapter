@@ -42,8 +42,8 @@ class InquirerControl(FormattedTextControl):
     selected_option_index = 0
     answered = False
 
-    def __init__(self, choices, **kwargs):
-        self.choices = choices
+    def __init__(self, branches, **kwargs):
+        self.branches = branches
         super(
             InquirerControl,
             self).__init__(
@@ -52,13 +52,14 @@ class InquirerControl(FormattedTextControl):
 
     @property
     def choice_count(self):
-        return len(self.choices)
+        return len(self.branches)
 
     def _get_choiced_tokens(self) -> List:
         tokens = []
         T = Token
 
         def _append(index, label):
+            nonlocal self
             selected = index == self.selected_option_index
 
             def _select_item(app, mouse_event):
@@ -80,7 +81,7 @@ class InquirerControl(FormattedTextControl):
             )
             tokens.append((T, "\n"))
 
-        for i, choice in enumerate(self.choices):
+        for i, choice in enumerate(self.branches):
             _append(i, choice)
 
         tokens.pop()
@@ -91,12 +92,14 @@ class InquirerControl(FormattedTextControl):
         ]
 
     def get_selection(self):
-        key = self.choices[self.selected_option_index]
+        key = self.branches[self.selected_option_index]
         return key
 
 
-class ConfigurationApp(Application):
+class Preferences(object):
     finished = False
+    want_to_continue = True
+
     kb = KeyBindings()
     breadcrumb = ""
     inquirer_style = style_from_pygments_dict(
@@ -111,12 +114,11 @@ class ConfigurationApp(Application):
     )
     confdict: Dict = {}
     attributes: Dict = {}
-    choices: List = []
+    branches: List = []
     hs_container = DummyControl()
-    current_select = None
+    current_node = None
 
     loop = get_event_loop()
-    tasks: List = []
 
     def __init__(
         self,
@@ -131,16 +133,15 @@ class ConfigurationApp(Application):
         input_method=None, output_method=None
     ):
         self.confdict, _choices = self._get_conf("config.json")
-        self.attributes, self.choices = self._get_conf(
+        self.attributes, self.branches = self._get_conf(
             ".attributes.json")
 
         self._conf_kb()
 
-        self.ic = InquirerControl(self.choices)
-
+        self.ic = InquirerControl(self.branches)
         self._set_layout()
 
-        super().__init__(
+        self.app = Application(
             layout=self.layout,
             style=self.inquirer_style,
             include_default_pygments_style=include_default_pygments_style,
@@ -163,6 +164,23 @@ class ConfigurationApp(Application):
             after_render=after_render,
             input=input_method,
             output=output_method)
+
+    def _set_app(self,
+                 include_default_pygments_style,
+                 style_transformation, clipboard, full_screen,
+                 color_depth, mouse_support,
+                 enable_page_navigation_bindings, paste_mode,
+                 editing_mode, erase_when_done,
+                 reverse_vi_search_direction, min_redraw_interval,
+                 max_render_postpone_time, on_reset, on_invalidate,
+                 before_render, after_render,
+                 input_method, output_method
+                 ):
+        self._set_layout()
+        self.app = Application(
+            layout=self.layout,
+            style=self.inquirer_style,
+            key_bindings=self.kb)
 
     def _conf_kb(self):
         kb = self.kb
@@ -286,12 +304,6 @@ class ConfigurationApp(Application):
         if self.ic.answered:
             selected = self.ic.get_selection()
 
-            if self.current_select == str(selected):
-                self.ic = InquirerControl([""])
-                self.reset()
-                self._set_layout()
-                self.exit()
-
             if self.breadcrumb:
                 self.breadcrumb += " >"
                 tokens.append((Token.Breadcrumb, self.breadcrumb))
@@ -315,14 +327,14 @@ class ConfigurationApp(Application):
                 attr_child = attributes[key]
 
                 if isinstance(attr_child, dict):
-                    self.attributes, self.choices = (
+                    self.attributes, self.branches = (
                         attr_child, list(attr_child.keys()))
                 elif isinstance(attr_child, list):
-                    self.attributes = self.choices = attr_child
+                    self.attributes = self.branches = attr_child
             else:
                 pass
 
-            return InquirerControl(self.choices)
+            return InquirerControl(self.branches)
 
         def _work_before_node(key, attr):
             nonlocal self
@@ -351,7 +363,7 @@ class ConfigurationApp(Application):
 
                     notice += ":"
 
-                    self.current_select = key
+                    self.current_node = key
                     self.attributes = []
 
                     self.ic = InquirerControl([""])
@@ -377,7 +389,7 @@ class ConfigurationApp(Application):
                     snddevs = list(sd.query_devices())
                     devlist = [devinfo["name"] for devinfo in snddevs]
                     self.ic = InquirerControl(devlist)
-                    self.current_select = key
+                    self.current_node = key
                     self.attributes = []
 
                     _additional = Window(
@@ -391,39 +403,18 @@ class ConfigurationApp(Application):
                     self._set_layout(additional=_additional)
                     res = False
 
-                elif str(self.current_select) in ["main", "monitor", "input"]:
+                elif str(self.current_node) in ["main", "monitor", "input"]:
                     res = key
 
                 # other cases
                 else:
                     self.ic = get_ic_child(key, attr)
-                    self.current_select = key
+                    self.current_node = key
                     self._set_layout()
                     res = False
 
             elif isinstance(attr, list):
                 res = key
-
-            elif key == "(path/to/file)":
-                self.attributes = []
-
-                self.ic = InquirerControl([""])
-                self.reset()
-                self._set_layout()
-
-                res = None
-
-                async def interactive_shell():
-                    nonlocal res
-                    res = await prompt(
-                        "Enter path:",
-                        completer=PathCompleter(),
-                        async_=True)
-                    return
-
-                self.loop.create_task(interactive_shell())
-                p = pathlib.Path(str(res))
-                res = str(p.resolve())
 
             return res
 
@@ -449,27 +440,23 @@ class ConfigurationApp(Application):
                 self.confdict["devices"][key_prev] = selected
 
             # [post process]
-            self.current_select = str(selected)
+            self.current_node = str(selected)
             self.finished = True
 
         result = _work_before_node(key, attributes)
         if result:
-            key_prev = self.current_select
+            key_prev = self.current_node
             _setval_if_key_is_node(key_prev, result)
 
     async def operate_loop(self):
         while not self.finished:
             await asleep(0.01)
 
+    def main(self):
+        want_to_save = True
 
-def main():
-    want_to_continue = True
-
-    while patch_stdout():
-        while want_to_continue:
-            app = ConfigurationApp()
-            app.loop.create_task(app.run())
-            app.loop.run_until_complete(app.operate_loop())
+        while self.want_to_continue:
+            self.app.run()
 
             want_to_save = yes_no_dialog(
                 title="",
@@ -480,14 +467,10 @@ def main():
                     'w',
                     encoding='UTF-8'
                 ) as file:
-                    commentjson.dump(app.confdict, file, indent=4)
+                    commentjson.dump(self.confdict, file, indent=4)
 
-            want_to_continue = yes_no_dialog(
+            self.want_to_continue = yes_no_dialog(
                 title="",
                 text="Do you want to configure more params?\n[Press ENTER to decide]")
 
         print_formatted_text("Done!")
-
-
-if __name__ == "__main__":
-    main()
