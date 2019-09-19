@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
-from collections import OrderedDict, defaultdict
 import pathlib
-from asyncio import get_event_loop, create_task, ensure_future, Task
+from asyncio import Task, create_task, ensure_future, get_event_loop
 from asyncio import sleep as asleep
-from typing import Dict, List, Tuple, Union, DefaultDict, Coroutine
-import commentjson
+from collections import OrderedDict, defaultdict
+from typing import Coroutine, DefaultDict, Dict, List, Tuple, Union
 
+import commentjson
 from prompt_toolkit import print_formatted_text, prompt
 from prompt_toolkit.completion import PathCompleter
-from prompt_toolkit.eventloop import generator_to_async_generator, use_asyncio_event_loop
+from prompt_toolkit.eventloop import (
+    generator_to_async_generator,
+    use_asyncio_event_loop)
 from prompt_toolkit.eventloop.context import wrap_in_current_context
 from prompt_toolkit.lexers import PygmentsLexer
-from prompt_toolkit.shortcuts import input_dialog, radiolist_dialog, yes_no_dialog
-from prompt_toolkit.styles import pygments_token_to_classname, style_from_pygments_dict
+from prompt_toolkit.shortcuts import (
+    input_dialog, radiolist_dialog,
+    yes_no_dialog)
+from prompt_toolkit.styles import (
+    pygments_token_to_classname,
+    style_from_pygments_dict)
 from prompt_toolkit.validation import ValidationError, Validator
 from pygments.lexers.python import Python3Lexer
 from pygments.token import Token, _TokenType
