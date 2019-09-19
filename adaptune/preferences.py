@@ -151,14 +151,15 @@ class PreferenceApp(object):
 
     def select_item(self, key, attributes):
 
-        def get_ic_child(key, attributes):
+        def get_child_node(key, attributes):
             attr_child = attributes[key]
 
             if isinstance(attr_child, dict):
                 self.attributes, self.nodes = (
                     attr_child, list(attr_child.keys()))
             elif isinstance(attr_child, list):
-                self.attributes = self.branches = attr_child
+                self.attributes = attr_child
+                self.branches = attr_child
 
         def _work_before_node(key, attr):
             nonlocal self
@@ -190,7 +191,6 @@ class PreferenceApp(object):
                     self.current_node = key
                     self.attributes = []
 
-                    self.reset()
                     res = None
 
                 # else(=="this branch has some branches"):
@@ -203,14 +203,14 @@ class PreferenceApp(object):
 
                     res = False
 
-                elif str(self.current_node) in ["main", "monitor", "input"]:
+                elif str(self.current_node) in [
+                        "main", "monitor", "input"]:
                     res = key
 
                 # other cases
                 else:
-                    self.ic = get_ic_child(key, attr)
+                    get_child_node(key, attr)
                     self.current_node = key
-                    self._set_layout()
                     res = False
 
             elif isinstance(attr, list):
