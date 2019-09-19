@@ -22,6 +22,7 @@ from prompt_toolkit.styles import (
     pygments_token_to_classname,
     style_from_pygments_dict)
 from prompt_toolkit.validation import ValidationError, Validator
+from prompt_toolkit.widgets import RadioList, MenuContainer, FormattedTextToolbar, ValidationToolbar, Dialog
 from pygments.lexers.python import Python3Lexer
 from pygments.token import Token, _TokenType
 from yaspin import yaspin
@@ -38,6 +39,14 @@ use_asyncio_event_loop()
 
 KeyType = Union[str, int, float]
 PathStr = str
+
+
+class RadioListDialog(Dialog):
+    
+    def __init__(self,
+                 body, title='', buttons=None, modal=True,
+                 width=None, with_background=False):
+        super().__init__(body, title=title, buttons=buttons, modal=modal, width=width, with_background=with_background)
 
 
 class PreferenceApp(object):
@@ -255,7 +264,7 @@ class PreferenceApp(object):
             _setval_if_key_is_node(key_prev, result)
 
     def _create_selection_event(self):
-        pass
+        self.tasks.append(create_task())
 
     def _create_input_event(self):
         pass

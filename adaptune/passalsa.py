@@ -6,8 +6,7 @@ from typing import Optional, Union, Iterator
 import alsaaudio as alsa
 import numpy as np
 
-from . import core
-from .config import params, dev
+from adaptune import core, params, dev
 
 
 class ALSA_Source(object):

@@ -40,5 +40,12 @@
         "latex"
     ],
     "python.formatting.provider": "black",
-    "python.linting.pylintEnabled": false
+    "python.linting.pylintEnabled": false,
+    "shortcuts.buttons": [
+        "terminal , workbench.action.terminal.toggleTerminal , Toggle terminal panel",
+        "file-binary , workbench.action.tasks.build , Run build task",
+        "beaker , workbench.action.tasks.test , Run test task",
+        "telescope , workbench.action.showCommands , Show command palette",
+        "bug, workbench.action.debug.start, Launch debug"
+    ]
 }
