@@ -5,19 +5,17 @@ verify_ssl = true
 
 [dev-packages]
 sphinx = "*"
-pylint = "*"
 jupyter = "*"
 sphinx-rtd-theme = "*"
 recommonmark = "*"
 flake8 = "*"
-autopep8 = "*"
 mypy = "*"
 typing = "*"
 python-language-server = "*"
 pip = "*"
-doc8 = "*"
 ptpython = "*"
 pyls = "*"
+black = "*"
 
 [packages]
 pip = "*"
@@ -39,3 +37,6 @@ python_version = "3.7"
 [scripts]
 sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"
 sphinxbuild = "sphinx-build -b html -a -E ./docs ./docs/_build"
+
+[pipenv]
+allow_prereleases = true
