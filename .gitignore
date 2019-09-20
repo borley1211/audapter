@@ -99,3 +99,6 @@ Pipfile.lock
 
 # No longer using files
 __oneshot__.py
+
+# Directory for Trial
+workspace/

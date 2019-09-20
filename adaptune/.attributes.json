@@ -104,9 +104,9 @@
         "FilterRLS",
         "FilterSSLMS"
     ],
-    "devices": {
-        "main": "output",
-        "monitor": "input",
-        "input": "input"
-    }
+    "devices": [
+        "main",
+        "monitor",
+        "input"
+    ]
 }

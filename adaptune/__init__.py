@@ -1,4 +1,4 @@
-__version__ = '0.1.0'
+__version__ = '0.0.1'
 
 import os
 
@@ -15,7 +15,7 @@ with open(
         'r', encoding='UTF-8') as file:
     config = commentjson.load(file)
 
-params = config["params"]
+params = config["hw_params"]
 if "PCM" in params["formatname"]:  # for alsaaudio
     params["formatname"] = eval("alsa." + params["formatname"])
 else:  # for sounddevice
