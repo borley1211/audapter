@@ -24,7 +24,7 @@ from prompt_toolkit.layout import (
 from prompt_toolkit.shortcuts import yes_no_dialog
 from prompt_toolkit.styles import pygments_token_to_classname, style_from_pygments_dict
 from prompt_toolkit.validation import ValidationError, Validator
-from prompt_toolkit.widgets import Box, TextArea, Dialog, Label, Button
+from prompt_toolkit.widgets import Box, TextArea
 from pygments.token import Token
 from yaspin import yaspin
 from yaspin.termcolor import colored
