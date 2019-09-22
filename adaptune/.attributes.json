@@ -64,10 +64,6 @@
                 "float128"
             ]
         },
-        "period_size": {
-            "type": "int",
-            "section": "lambda psize: True if psize > 0 else False"
-        },
         "channels": [
             1,
             2,
@@ -78,10 +74,6 @@
         ]
     },
     "filter_params": {
-        "mu": {
-            "type": "float",
-            "section": "lambda mu: True if 0.0 < mu <= 1.0 else False"
-        },
         "w": [
             "random",
             "zeros"

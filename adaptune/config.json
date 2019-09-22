@@ -6,7 +6,6 @@
         "channels": 2
     },
     "filter_params": {
-        "mu": 0.01,
         "w": "zeros"
     },
     "filter_domain": "time",

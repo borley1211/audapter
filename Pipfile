@@ -30,6 +30,7 @@ pysoundfile = "*"
 yaspin = "*"
 prompt-toolkit = "*"
 pyalsaaudio = "*"
+sympy = "*"
 
 [requires]
 python_version = "3.7"

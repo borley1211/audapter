@@ -4,7 +4,7 @@ import numpy as np
 from librosa.core import istft, stft
 from padasip import padasip as pa
 
-from .config import default_filter, domain, filter_params, params
+from adaptune import default_filter, domain, filter_params, params
 
 
 class AdapTuner(object):
@@ -15,14 +15,14 @@ class AdapTuner(object):
     def __init__(
             self,
             domain: str = domain,
-            default_filter: 'pa.filters.FilterXX' = default_filter,
+            default_filter: pa.filters.AdaptiveFilter = default_filter,
+            n: int = 1024,
             fs: int = params["rate"]) -> None:
 
-        self.domain = domain if domain == 'time' or domain == 'freq' else None
+        self.domain = domain if domain in ['time', 'freq'] else None
         if self.domain is None:
             raise
-        self.period_size = params["period_size"]
-        self.n_filter = self.period_size * 2
+        self.n_filter = n
         self.rate = fs
         self.filter = default_filter(self.n_filter, **filter_params)
         self.datas_in = np.zeros(self.n_filter, dtype=np.float16)  # 入力を記憶しておくndarray

@@ -1,29 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
+from collections import OrderedDict, defaultdict
 from inspect import getsource
-from collections import defaultdict, OrderedDict
-from typing import DefaultDict, Dict, List, Tuple, Union, Optional
+from typing import DefaultDict, Dict, List, Optional, Tuple, Union
 
 import commentjson
-from prompt_toolkit import print_formatted_text, Application
-from prompt_toolkit.buffer import Buffer
+from prompt_toolkit import Application, print_formatted_text
 from prompt_toolkit.filters import Condition, IsDone
+from prompt_toolkit.formatted_text import to_formatted_text
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout import (
-    D,
-    Layout,
-    FormattedTextControl,
-    Container,
-    HSplit,
-    Window,
     ConditionalContainer,
+    Container,
+    D,
+    FormattedTextControl,
+    HSplit,
+    Layout,
     ScrollOffsets,
-    UIControl,
+    Window,
 )
 from prompt_toolkit.shortcuts import yes_no_dialog
 from prompt_toolkit.styles import pygments_token_to_classname, style_from_pygments_dict
-from prompt_toolkit.validation import ValidationError, Validator
 from prompt_toolkit.widgets import Box, TextArea
 from pygments.token import Token
 from yaspin import yaspin
@@ -165,7 +163,7 @@ class PreferenceApp(Application):
         }
     )
 
-    control: UIControl
+    control: InquirerControl
     container: Optional[Container] = None
 
     confdict: Dict
@@ -173,7 +171,7 @@ class PreferenceApp(Application):
     attr_header: Dict = {}
     root: List[KeyType] = []
 
-    attributes: Dict = {}
+    attributes: Union[Dict, List] = {}
     nodes: List[KeyType] = []
 
     current_node: KeyType = ""
@@ -182,12 +180,12 @@ class PreferenceApp(Application):
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
-        self.load_config()
+        self.get_config()
         self._initialize()
 
-    def load_config(self):
-        self.confdict, _choices = self.load_conf("config.json")
-        self.attr_header, self.root = self.load_conf(".attributes.json")
+    def get_config(self):
+        self.confdict, _choices = self._load_conf("config.json")
+        self.attr_header, self.root = self._load_conf(".attributes.json")
 
     def set_header(self):
         self.attributes = self.attr_header
@@ -239,16 +237,11 @@ class PreferenceApp(Application):
                 self.control.selected_index - 1
             ) % self.control.choice_count
 
-        @bindings.add("enter", eager=True, filter=~Condition(lambda: self.all_done))
+        @bindings.add("enter", eager=True)
         def set_value(event):
             nonlocal self
             self.control.answered = True
             event.app.invalidate()
-
-        @bindings.add("enter", eager=True, filter=Condition(lambda: self.all_done))
-        def _exit(event):
-            self.control = InquirerControl([""])
-            event.app.exit(None)
 
         self.key_bindings = bindings
 
@@ -262,7 +255,7 @@ class PreferenceApp(Application):
         self.kwargs["style"] = self.pref_style
         super().__init__(**self.kwargs)
 
-    def load_conf(self, configobj: Union[str, Dict, List]) -> Tuple[Dict, List]:
+    def _load_conf(self, configobj: Union[str, Dict, List]) -> Tuple[Dict, List]:
         _config: Dict = {}
         keylist: List = []
 
@@ -278,10 +271,6 @@ class PreferenceApp(Application):
 
                 if key == "type":
                     newd[key] = eval(val)
-                elif key == "section":
-                    newval = None
-                    exec("newval = {}".format(val))
-                    newd.update(section=newval)
                 else:
                     newd[key] = val
 
@@ -348,7 +337,7 @@ class PreferenceApp(Application):
         ]
 
     def select_index(self, key, attributes):
-        def get_child_node(key, attributes):
+        def set_child_control(key, attributes):
             if isinstance(attributes, dict):
                 attr_child = attributes[key]
 
@@ -356,84 +345,51 @@ class PreferenceApp(Application):
                     self.attributes = attr_child
                     self.nodes = list(attr_child.keys())
                 elif isinstance(attr_child, list):
-                    self.attributes = attr_child
+                    self.attributes = []
                     self.nodes = attr_child
             else:
                 pass
 
+            self.control = InquirerControl(self.nodes)
+
         def _work_before_node(key, attr):
             nonlocal self
+            _result: Union[bool, KeyType] = False
 
             if isinstance(attr, dict):
-                # if "this branch has only nodes":
-                attr_child = attr[key]
-                if set(attr_child) >= {"type", "section"}:
-                    notice = "Enter {}".format(attr_child["type"])
-                    notice += " as {}".format(attr_child["section"])
-
-                    def _validfunc(inputs):
-                        nonlocal attr_child
-                        if not attr_child["section"](inputs):
-                            raise ValidationError(
-                                message="This input does not meet the requirements as {}".format(
-                                    type(attr["section"])
-                                )
-                            )
-                        elif not isinstance(inputs, attr_child["type"]):
-                            raise ValidationError(
-                                message="This input does not contain the type as {}".format(
-                                    getsource(attr["type"])
-                                )
-                            )
-                        else:
-                            return inputs
-
-                    validator = Validator.from_callable(_validfunc)
-
-                    def validate_buffer(buf: Buffer):
-                        return validator.validate(buf.document)
-
-                    notice += ":"
-
-                    self.current_node = key
-                    self.attributes = []
-
-                    self.control = InquirerControl([""])
-                    self.container = TextBox(
-                        text=notice, accept_handler=validate_buffer
-                    )
-                    self.set_layout()
-                    _result = None
-
-                # else(=="this branch has some branches"):
+                # this branch has some branches
                 # special case in "device"
-                elif key in ["main", "monitor", "input"]:
+                if key in ["main", "monitor", "input"]:
                     snddevs = list(sd.query_devices())
                     devlist = [devinfo["name"] for devinfo in snddevs]
                     self.current_node = key
                     self.attributes = []
+                    self.nodes = devlist
 
                     self.control = InquirerControl(devlist)
                     self.set_layout(
                         additional=Window(
-                            FormattedTextControl(sd.query_devices().__repr__())
+                            FormattedTextControl(
+                                text=to_formatted_text(
+                                    sd.query_devices(), auto_convert=True
+                                )
+                            )
                         )
                     )
                     _result = False
 
-                elif str(self.current_node) in ["main", "monitor", "input"]:
-                    self.current_node = ""
-                    _result = key
-
                 # other cases
                 else:
-                    get_child_node(key, attr)
-                    self.current_node = key
+                    set_child_control(key, attr)
                     self.set_layout()
                     _result = False
 
             elif isinstance(attr, list):
-                self.current_node = ""
+                if str(self.current_node) in ["main", "monitor", "input"]:
+                    pass
+                else:
+                    self.current_node = key
+                self.attributes = []
                 _result = key
 
             return _result
@@ -448,7 +404,7 @@ class PreferenceApp(Application):
                 self.confdict["hw_params"]["formatname"] = selected
 
             # filter_params
-            elif key_prev in ["mu", "w"]:
+            elif key_prev == "w":
                 self.confdict["filter_params"][key_prev] = selected
 
             # (as below)
@@ -460,8 +416,12 @@ class PreferenceApp(Application):
                 self.confdict["devices"][key_prev] = selected
 
             # [post process]
-            self.current_node = str(selected)
+            self.control.answered = False
             self.all_done = True
+
+            self.reset()
+            self.invalidate()
+            self.exit(None)
 
         result = _work_before_node(key, attributes)
         if result:
@@ -473,17 +433,14 @@ class PreferenceApp(Application):
             self.run()
 
             want_to_write = yes_no_dialog(
-                """
-                Do you want to (over)write the configuration file?
-                """
+                title="Preferences",
+                text="Do you want to (over)write the configuration file?",
             )
             if want_to_write:
                 self.save_conf()
 
             self.want_to_continue = yes_no_dialog(
-                """
-                Do you want to configure for other indexes?
-                """
+                title="Preferences", text="Do you want to configure for other indexes?"
             )
             if self.want_to_continue:
                 self._initialize()
