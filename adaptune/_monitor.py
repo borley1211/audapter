@@ -10,9 +10,10 @@ import librosa as rosa
 import numpy as np
 from matplotlib import animation
 from matplotlib import pyplot as plt
-from . import passalsa, params, dev
+from . import passalsa
+from ._load_config import hw_params, dev
 
-m_params = params.copy()
+m_params = hw_params.copy()
 # m_params["channels"] = 1
 
 

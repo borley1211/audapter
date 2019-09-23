@@ -2,9 +2,9 @@ from typing import Tuple
 
 import numpy as np
 from librosa.core import istft, stft
-from padasip import padasip as pa
+import padasip as pa
 
-from adaptune import default_filter, domain, filter_params, params
+from ._load_config import default_filter, domain, filter_params, hw_params
 
 
 class AdapTuner(object):
@@ -13,23 +13,27 @@ class AdapTuner(object):
     """
 
     def __init__(
-            self,
-            domain: str = domain,
-            default_filter: pa.filters.AdaptiveFilter = default_filter,
-            n: int = 1024,
-            fs: int = params["rate"]) -> None:
+        self,
+        domain: str = domain,
+        default_filter: pa.filters.AdaptiveFilter = default_filter,
+        n: int = 1024,
+        fs: int = hw_params["rate"],
+    ) -> None:
 
-        self.domain = domain if domain in ['time', 'freq'] else None
+        self.domain = domain if domain in ["time", "freq"] else None
         if self.domain is None:
             raise
         self.n_filter = n
         self.rate = fs
-        self.filter = default_filter(self.n_filter, **filter_params)
-        self.datas_in = np.zeros(self.n_filter, dtype=np.float16)  # 入力を記憶しておくndarray
+        self.filter: pa.filters.AdaptiveFilter = default_filter(
+            self.n_filter, **filter_params
+        )
+        self.datas_in: np.ndarray = np.zeros(
+            self.n_filter, dtype=np.float16
+        )  # 入力を記憶しておくndarray
 
     def _tune_at_time(
-        self, desired: np.ndarray,
-        data_in: np.ndarray
+        self, desired: np.ndarray, data_in: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Time-based tuning
@@ -38,8 +42,7 @@ class AdapTuner(object):
         return self.filter.run(desired, data_in)
 
     def _tune_at_freq(
-        self, desired: np.ndarray,
-        data_in: np.ndarray
+        self, desired: np.ndarray, data_in: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Frequency-based tuning
@@ -51,8 +54,7 @@ class AdapTuner(object):
         return istft(X_out), istft(Err), W_frq
 
     def tune(
-        self, desired: np.ndarray,
-        data_in: np.ndarray
+        self, desired: np.ndarray, data_in: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         適応フィルタを更新します。
@@ -74,10 +76,10 @@ class AdapTuner(object):
                 * weights (np.ndarray): 現在までのフィルタ係数(の履歴)。2次元配列。
 
         """
-        self.datas_in[-data_in.size:] = data_in
-        if self.domain == 'time':
+        self.datas_in[-(data_in.size) :] = data_in
+        if self.domain == "time":
             x_out = self._tune_at_time(desired, self.datas_in)
-        elif self.domain == 'freq':
+        elif self.domain == "freq":
             x_out = self._tune_at_freq(desired, self.datas_in)
         return x_out
 

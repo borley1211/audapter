@@ -28,7 +28,8 @@ author = 'Miebori Kazuma'
 # The full version, including alpha/beta/rc tags
 with open(os.path.join('../', project, '__init__.py')) as f:
     match = re.search(r'__version__\s+=\s+(.*)', f.read())
-release = str(ast.literal_eval(match.group(1)))
+if match:
+    release = str(ast.literal_eval(match.group(1)))
 
 
 # -- General configuration ---------------------------------------------------

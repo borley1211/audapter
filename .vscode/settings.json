@@ -14,9 +14,6 @@
     "python.analysis.logLevel": "Trace",
     "restructuredtext.confPath": "${workspaceFolder}/docs",
     "restructuredtext.experimental": true,
-    "python.linting.flake8Args": [
-        "--ignore=W293, W504, E501, W605, F403"
-    ],
     "python.linting.flake8CategorySeverity.F": "Hint",
     "files.watcherExclude": {
         "**/__pycache__/**": true,
@@ -47,5 +44,8 @@
         "beaker , workbench.action.tasks.test , Run test task",
         "telescope , workbench.action.showCommands , Show command palette",
         "bug, workbench.action.debug.start, Launch debug"
+    ],
+    "python.linting.flake8Args": [
+        "--config=setup.cfg"
     ]
 }
