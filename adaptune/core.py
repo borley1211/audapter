@@ -70,8 +70,22 @@ class AdapTuner(object):
                 * output (np.ndarray): 出力値のベクトル。
 
                 * error (np.ndarray): 全サンプルにおける誤差のベクトル。
+                
+                .. math::
+                    :nowrap:
 
-                    :math: `(error) = (desired) - (filter)\cdot(input)`
+                    \[
+                    \left\{
+                        \\begin{array}{rcl}
+                            e & : & \\text{error} \\\\
+                            d & : & \\text{desired} \\\\
+                            x & : & \\text{input} \\\\
+                            \\boldsymbol{\omega} & : & \\text{filter weight}
+                        \\end{array}
+                    \\right. \\\\
+                    \\, \\\\
+                    e = d - \\boldsymbol{\omega} \cdot x
+                    \]
 
                 * weights (np.ndarray): 現在までのフィルタ係数(の履歴)。2次元配列。
 

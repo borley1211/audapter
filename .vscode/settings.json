@@ -47,5 +47,6 @@
     ],
     "python.linting.flake8Args": [
         "--config=setup.cfg"
-    ]
+    ],
+    "pythonIndent.useTabOnHangingIndent": true
 }
