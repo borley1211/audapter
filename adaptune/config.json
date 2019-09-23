@@ -2,7 +2,6 @@
     "hw_params": {
         "rate": 48000,
         "formatname": "float64",
-        "period_size": 1024,
         "channels": 2
     },
     "filter_params": {

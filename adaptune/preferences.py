@@ -315,7 +315,7 @@ class PreferenceApp(Application):
             # [post process]
             self.all_done = True
             
-            self.breadcrumb += " Selected! Please ENTER... "
+            self.breadcrumb = " Selected! Please ENTER... "
             self.control = InquirerControl([""])
             self.set_layout()
             self.invalidate()
