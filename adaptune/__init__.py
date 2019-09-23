@@ -1,4 +1,4 @@
-__version__ = '0.0.1'
+__version__ = "0.0.1"
 
 import os
 
@@ -10,9 +10,21 @@ from padasip import padasip as pa
 from adaptune import core, passalsa, preferences
 from adaptune._monitor import monitor
 
+__all__ = [
+    "core",
+    "passalsa",
+    "monitor",
+    "dev",
+    "params",
+    "filter_params",
+    "domain",
+    "default_filter",
+    "preferences",
+]
+
 with open(
-    os.path.join(os.path.dirname(__file__), "config.json"),
-        'r', encoding='UTF-8') as file:
+    os.path.join(os.path.dirname(__file__), "config.json"), "r", encoding="UTF-8"
+) as file:
     config = commentjson.load(file)
 
 params = config["hw_params"]
@@ -28,15 +40,3 @@ domain = config["filter_domain"]
 default_filter = eval("pa.filters." + config["filter_algo"])
 
 dev = config["devices"]
-
-
-__all__ = [
-    'core',
-    'passalsa',
-    'monitor',
-    'dev',
-    'params',
-    'filter_params',
-    'domain',
-    'default_filter',
-    'preferences']
