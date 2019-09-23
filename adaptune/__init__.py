@@ -7,8 +7,8 @@ import commentjson
 import numpy as np
 from padasip import padasip as pa
 
-from . import core, passalsa, preferences
-from ._monitor import monitor
+from adaptune import core, passalsa, preferences
+from adaptune._monitor import monitor
 
 with open(
     os.path.join(os.path.dirname(__file__), "config.json"),
