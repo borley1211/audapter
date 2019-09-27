@@ -11,14 +11,12 @@ recommonmark = "*"
 flake8 = "*"
 mypy = "*"
 typing = "*"
-python-language-server = "*"
 pip = "*"
 ptpython = "*"
 pyls = "*"
 black = "*"
 
 [packages]
-pip = "*"
 numpy = "*"
 matplotlib = "*"
 typing = "*"
@@ -31,9 +29,6 @@ yaspin = "*"
 prompt-toolkit = "*"
 pyalsaaudio = "*"
 sympy = "*"
-
-[requires]
-python_version = "3.7"
 
 [scripts]
 sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"
