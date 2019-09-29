@@ -119,7 +119,7 @@ class PreferenceApp(Application):
 
     def get_config(self):
         self.confdict, _choices = self._load_conf("config.json")
-        self.attr_header, self.root = self._load_conf(".attributes.json")
+        self.attr_header, self.root = self._load_conf("data/.attributes.json")
 
     def set_header(self):
         self.attributes = self.attr_header
