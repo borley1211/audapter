@@ -118,8 +118,8 @@ class PreferenceApp(Application):
         self._initialize()
 
     def get_config(self):
-        self.confdict, _choices = self._load_conf("config.json")
-        self.attr_header, self.root = self._load_conf("data/.attributes.json")
+        self.confdict, _choices = self._load_conf("./config.json")
+        self.attr_header, self.root = self._load_conf("./data/config_attributes.json")
 
     def set_header(self):
         self.attributes = self.attr_header
@@ -216,7 +216,7 @@ class PreferenceApp(Application):
 
     def save_conf(self):
         with open(
-            os.path.join(os.path.dirname(__file__), "config.json"),
+            os.path.join(os.path.dirname(__file__), "./config.json"),
             "w",
             encoding="UTF-8",
         ) as file:

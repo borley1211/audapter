@@ -31,7 +31,7 @@ pyalsaaudio = "*"
 sympy = "*"
 
 [scripts]
-sphinxgendoc = "sphinx-apidoc -f -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"
+sphinxgendoc = "_opt=''; if [ -e './docs/conf.py' ]; then; _opt='-f'; else; _opt='-F'; fi; sphinx-apidoc '${_opt}' -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"
 sphinxbuild = "sphinx-build -b html -a -E ./docs ./docs/_build"
 
 [pipenv]
