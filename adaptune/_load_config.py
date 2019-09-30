@@ -16,6 +16,7 @@ with open(
     config = commentjson.load(file)
 
 _params = config["hw_params"]
+_params["frames"] = 1024
 
 _fmtname: str = str(_params["formatname"])
 if _fmtname.startswith("PCM"):  # for alsaaudio
