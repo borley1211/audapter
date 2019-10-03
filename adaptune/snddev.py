@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 from typing import Optional, Tuple, Iterator
 import numpy as np
+import padasip
 from . import core
-from ._load_config import hw_params, dev
+from ._load_config import hw_params, dev, domain, default_filter
 import sounddevice as sd
 
 
@@ -100,3 +101,11 @@ class Sink(sd.OutputStream):
             never_drop_input=never_drop_input,
             prime_output_buffers_using_stream_callback=prime_output_buffers_using_stream_callback,
         )
+
+
+def run(domain: str = domain, filter_: padasip.filters.AdaptiveFilter = default_filter, n: int = 1024, fs: int = hw_params["rate"]):
+    MONITOR = Source(device=dev["monitor"])
+    SPEAKER = Sink(device=dev["main"])
+    MICRO = Source(device=dev["input"])
+    
+    adfilter = core.AdapTuner(domain=domain, default_filter=filter_, n=n, fs=fs)
