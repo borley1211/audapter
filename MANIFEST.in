@@ -1,5 +1,6 @@
 include LICENSE
 include adaptune/data/*.json
+include adaptune/data/*.ico
 
 graft tests
 graft docs
