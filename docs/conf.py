@@ -26,7 +26,7 @@ copyright = "2019, Miebori Kazuma"
 author = "Miebori Kazuma"
 
 # The full version, including alpha/beta/rc tags
-with open(os.path.join("../", project, "__init__.py")) as f:
+with open(os.path.join("..", project, "__init__.py")) as f:
     match = re.search(r"__version__\s+=\s+(.*)", f.read())
 if match:
     release = str(ast.literal_eval(match.group(1)))
