@@ -11,7 +11,7 @@ __all__ = ["hw_params", "filter_params", "domain", "default_filter", "dev"]
 config: OrderedDict = OrderedDict()
 
 with open(
-    os.path.join(os.path.dirname(__file__), "config.json"), "r", encoding="UTF-8"
+    os.path.join(os.path.dirname(__file__), "data/config.json"), "r", encoding="UTF-8"
 ) as file:
     config = commentjson.load(file)
 
