@@ -6,7 +6,7 @@ import numpy as np
 import padasip
 import sounddevice as sd
 
-from adaptune import core
+import adaptune.core as core
 from adaptune._load_config import default_filter, dev, domain, hw_params
 
 sd.default.samplerate = hw_params["rate"]
