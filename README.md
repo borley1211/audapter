@@ -1,1 +1,1 @@
-![AdapTune](adaptune/icon/logo_trimmed.png)
+![AdapTune](adaptune/icon/logo_transparent.png)
