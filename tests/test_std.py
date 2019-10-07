@@ -9,11 +9,11 @@ class BasicTestSuite(unittest.TestCase):
 
     def test_passalsa_main_at_time(self):
         runtime = 2
-        domain = 'time'
+        domain = "time"
         expected = True
         actual = adaptune.passalsa.run(domain=domain, run_time=runtime)
         self.assertEqual(expected, actual)
-        
+
     def test_monitor(self):
         runtime = 2
         devname = adaptune.dev["monitor"]

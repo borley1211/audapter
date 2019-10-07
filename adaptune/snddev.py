@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import Optional, Tuple, Iterator
+from typing import Iterator, Optional, Tuple
+
 import numpy as np
 import padasip
-from . import core
-from ._load_config import hw_params, dev, domain, default_filter
 import sounddevice as sd
 
+from adaptune import core
+from adaptune._load_config import default_filter, dev, domain, hw_params
 
 sd.default.samplerate = hw_params["rate"]
 sd.default.dtype = (hw_params["formatname"], hw_params["formatname"])
@@ -69,7 +70,6 @@ class Source(sd.InputStream):
 
 
 class Sink(sd.OutputStream):
-
     def __init__(
         self,
         samplerate=None,
@@ -103,9 +103,35 @@ class Sink(sd.OutputStream):
         )
 
 
-def run(domain: str = domain, filter_: padasip.filters.AdaptiveFilter = default_filter, n: int = 1024, fs: int = hw_params["rate"]):
+def _catch(var):
+    var = False
+
+
+def run(
+    domain: str = domain,
+    filter_: padasip.filters.AdaptiveFilter = default_filter,
+    n: int = 1024,
+    fs: int = hw_params["rate"],
+):
     MONITOR = Source(device=dev["monitor"])
     SPEAKER = Sink(device=dev["main"])
     MICRO = Source(device=dev["input"])
-    
+
+    res = True
+
     adfilter = core.AdapTuner(domain=domain, default_filter=filter_, n=n, fs=fs)
+
+    try:
+        for desired, recorded in zip(
+            MONITOR.read_as_iterable(), MICRO.read_as_iterable()
+        ):
+            x_out, err, w_c = adfilter.tune(desired, recorded)
+            SPEAKER.write(x_out)
+    except KeyboardInterrupt:
+        _catch(res)
+
+    return res
+
+
+if __name__ == "__main__":
+    run()

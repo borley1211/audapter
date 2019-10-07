@@ -1,7 +1,7 @@
 #!/usr/dev python3
 # -*- coding: utf-8 -*-
 from time import time
-from typing import Optional, Union, Iterator
+from typing import Iterator, Optional, Union
 
 import alsaaudio as alsa
 import numpy as np

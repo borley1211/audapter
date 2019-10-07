@@ -4,7 +4,7 @@ import numpy as np
 import padasip as pa
 from librosa.core import istft, stft
 
-from ._load_config import default_filter, domain, filter_params, hw_params
+from adaptune._load_config import default_filter, domain, filter_params, hw_params
 
 
 class AdapTuner(object):
