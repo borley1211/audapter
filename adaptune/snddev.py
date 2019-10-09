@@ -133,5 +133,20 @@ def run(
     return res
 
 
+def pass_thru(input_=dev["input"], output_=dev["default"]):
+    MICRO = Source(device=input_)
+    SPEAKER = Sink(device=output_)
+
+    res = True
+
+    try:
+        for recorded in MICRO.read_as_iterable():
+            SPEAKER.write(recorded)
+    except KeyboardInterrupt:
+        _catch(res)
+
+    return res
+
+
 if __name__ == "__main__":
-    run()
+    pass_thru()
