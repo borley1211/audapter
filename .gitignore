@@ -94,9 +94,6 @@ ENV/
 # MyPy's caches
 .mypy_cache/
 
-# Pipenv lockfile
-Pipfile.lock
-
 # No longer using files
 __oneshot__.py
 
