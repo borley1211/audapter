@@ -1,0 +1,17 @@
+{
+    "hw_params": {
+        "rate": 48000,
+        "formatname": "float32",
+        "channels": 2
+    },
+    "filter_params": {
+        "w": "zeros"
+    },
+    "filter_domain": "time",
+    "filter_algo": "FilterNLMS",
+    "devices": {
+        "main": "default",
+        "monitor": "monitor",
+        "input": "mic"
+    }
+}
