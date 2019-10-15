@@ -216,7 +216,7 @@ class PreferenceApp(Application):
 
     def save_conf(self):
         with open(
-            os.path.join(os.path.dirname(__file__), "./config.json"),
+            os.path.join(os.path.dirname(__file__), "data/config.json"),
             "w",
             encoding="UTF-8",
         ) as file:
