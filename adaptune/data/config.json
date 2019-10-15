@@ -1,7 +1,7 @@
 {
     "hw_params": {
         "rate": 48000,
-        "formatname": "float64",
+        "formatname": "float32",
         "channels": 2
     },
     "filter_params": {
