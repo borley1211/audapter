@@ -133,7 +133,7 @@ def run(
     return res
 
 
-def pass_thru(input_=dev["input"], output_=dev["default"]):
+def pass_thru(input_=dev["input"], output_=dev["main"]):
     MICRO = Source(device=input_)
     SPEAKER = Sink(device=output_)
 
