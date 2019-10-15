@@ -97,5 +97,8 @@ ENV/
 # No longer using files
 __oneshot__.py
 
+# LockFile for PipEnv
+Pipfile.lock
+
 # Directory for Trial
 workspace/
