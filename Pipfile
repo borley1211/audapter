@@ -10,13 +10,11 @@ verify_ssl = true
 
 [dev-packages]
 sphinx = "*"
-jupyter = "*"
 sphinx-rtd-theme = "*"
 recommonmark = "*"
 flake8 = "*"
 mypy = "*"
 typing = "*"
-pip = "*"
 ptpython = "*"
 pyls = "*"
 black = "*"
@@ -30,10 +28,9 @@ padasip = "*"
 commentjson = "*"
 sounddevice = "*"
 pysoundfile = "*"
-yaspin = "*"
-prompt-toolkit = "*"
 pyalsaaudio = "*"
 sympy = "*"
+scipy = "*"
 
 [scripts]
 sphinxgendoc = "_opt=''; if [ -e './docs/conf.py' ]; then; _opt='-f'; else; _opt='-F'; fi; sphinx-apidoc '${_opt}' -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"

@@ -12,6 +12,7 @@ from adaptune._load_config import default_filter, dev, domain, hw_params
 sd.default.samplerate = hw_params["rate"]
 sd.default.dtype = (hw_params["formatname"], hw_params["formatname"])
 sd.default.channels = (hw_params["channels"], hw_params["channels"])
+sd.
 
 
 class Source(sd.InputStream):
@@ -101,10 +102,10 @@ class Sink(sd.OutputStream):
             never_drop_input=never_drop_input,
             prime_output_buffers_using_stream_callback=prime_output_buffers_using_stream_callback,
         )
+        
 
-
-def _catch(var):
-    var = False
+class IterableStream():
+    pass
 
 
 def run(
@@ -128,7 +129,7 @@ def run(
             x_out, err, w_c = adfilter.tune(desired, recorded)
             SPEAKER.write(x_out)
     except KeyboardInterrupt:
-        _catch(res)
+        res = False
 
     return res
 
@@ -143,7 +144,7 @@ def pass_thru(input_=dev["input"], output_=dev["main"]):
         for recorded in MICRO.read_as_iterable():
             SPEAKER.write(recorded)
     except KeyboardInterrupt:
-        _catch(res)
+        res = False
 
     return res
 
