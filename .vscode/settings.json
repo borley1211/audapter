@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": ".venv/bin/python",
+    "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true,
@@ -14,23 +14,21 @@
     "python.analysis.logLevel": "Trace",
     "restructuredtext.confPath": "${workspaceFolder}/docs",
     "restructuredtext.experimental": true,
-    "python.linting.flake8CategorySeverity.F": "Hint",
     "files.watcherExclude": {
         "**/__pycache__/**": true,
         "**/.mypy_cache/**": true
     },
-    "python.testing.unittestEnabled": false,
+    "python.testing.unittestEnabled": true,
     "python.testing.unittestArgs": [
         "-v",
         "-s",
         "./tests",
         "-p",
-        "*test*.py"
+        "test*.py"
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "pythonTestExplorer.testFramework": "unittest",
-    "python.testing.promptToConfigure": false,
     "indentRainbow.ignoreErrorLanguages": [
         "markdown",
         "python",
@@ -48,5 +46,18 @@
     "python.linting.flake8Args": [
         "--config=setup.cfg"
     ],
-    "pythonIndent.useTabOnHangingIndent": true
+    "pythonIndent.useTabOnHangingIndent": true,
+    "pythonPreview.showAllFrameLabels": true,
+    "pythonPreview.compactFuncLabels": true,
+    "pythonPreview.disableHeapNesting": true,
+    "python.analysis.cacheFolderPath": "/tmp/.vscode.python/__pycache__/",
+    "python.analysis.memory.keepLibraryAst": true,
+    "python.analysis.memory.keepLibraryLocalVariables": true,
+    "python.dataScience.allowUnauthorizedRemoteConnection": true,
+    "python.dataScience.exportWithOutputEnabled": true,
+    "python.dataScience.magicCommandsAsComments": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.testing.cwd": "${workspaceFolder}",
+    "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv"
 }
