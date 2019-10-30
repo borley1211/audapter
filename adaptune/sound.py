@@ -33,8 +33,7 @@ class IterableStream(sd.Stream):
         finished_callback=None,
         clip_off=None,
         dither_off=None,
-        never_drop_input=None,
-        prime_output_buffers_using_stream_callback=None,
+        never_drop_input=None
     ):
         self.frames = frames
         self.is_running = True
@@ -50,8 +49,7 @@ class IterableStream(sd.Stream):
             finished_callback=finished_callback,
             clip_off=clip_off,
             dither_off=dither_off,
-            never_drop_input=never_drop_input,
-            prime_output_buffers_using_stream_callback=prime_output_buffers_using_stream_callback,
+            never_drop_input=never_drop_input
         )
         
     def read_as_iterable(
