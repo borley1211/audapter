@@ -10,7 +10,7 @@
     "filter_domain": "time",
     "filter_algo": "FilterNLMS",
     "devices": {
-        "main": "out",
+        "main": "speaker",
         "monitor": "monitor",
         "input": "array"
     }
