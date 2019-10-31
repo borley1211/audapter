@@ -12,6 +12,7 @@ from adaptune._load_config import default_filter, dev, domain, hw_params
 sd.default.samplerate = hw_params["rate"]
 sd.default.dtype = (hw_params["formatname"], hw_params["formatname"])
 sd.default.channels = (hw_params["channels"], hw_params["channels"])
+sd.default.never_drop_input = True
 sd.default.prime_output_buffers_using_stream_callback = True
 
 
@@ -21,37 +22,14 @@ class IterableStream(sd.Stream):
 
     def __init__(
         self,
-        frames=hw_params["frames"],
-        samplerate=None,
-        blocksize=None,
-        device=None,
-        channels=None,
-        dtype=None,
-        latency=None,
-        extra_settings=None,
-        callback=None,
-        finished_callback=None,
-        clip_off=None,
-        dither_off=None,
-        never_drop_input=None
+        frames,
+        *args,
+        **kwargs,
     ):
         self.frames = frames
         self.is_running = True
-        super().__init__(
-            samplerate=samplerate,
-            blocksize=blocksize,
-            device=device,
-            channels=channels,
-            dtype=dtype,
-            latency=latency,
-            extra_settings=extra_settings,
-            callback=callback,
-            finished_callback=finished_callback,
-            clip_off=clip_off,
-            dither_off=dither_off,
-            never_drop_input=never_drop_input
-        )
-        
+        super(IterableStream, self).__init__(*args, **kwargs)
+
     def read_as_iterable(
         self, frames: Optional[int] = None
     ) -> Iterator[Tuple[np.ndarray, bool]]:
@@ -74,9 +52,9 @@ def run(
     n: int = 1024,
     fs: int = hw_params["rate"],
 ):
-    MONITOR = IterableStream(device=dev["monitor"])
-    SPEAKER = IterableStream(device=dev["main"])
-    MICRO = IterableStream(device=dev["input"])
+    MONITOR = IterableStream(frames=n, device=dev["monitor"])
+    SPEAKER = IterableStream(frames=n, device=dev["main"])
+    MICRO = IterableStream(frames=n, device=dev["input"])
 
     res = True
 
@@ -94,9 +72,9 @@ def run(
     return res
 
 
-def pass_thru(input_=dev["input"], output_=dev["main"]):
-    MICRO = IterableStream(device=input_)
-    SPEAKER = IterableStream(device=output_)
+def pass_thru(n: int = 1024, input_=dev["input"], output_=dev["main"]):
+    MICRO = IterableStream(frames=n, device=input_)
+    SPEAKER = IterableStream(frames=n, device=output_)
 
     res = True
 

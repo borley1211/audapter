@@ -17,6 +17,8 @@ mypy = "*"
 ptpython = "*"
 pyls = "*"
 black = "*"
+pynvim = "*"
+neovim = "*"
 
 [packages]
 numpy = "*"
