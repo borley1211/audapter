@@ -97,8 +97,8 @@
         "FilterSSLMS"
     ],
     "devices": [
-        "main",
-        "monitor",
-        "input"
+        "target",
+        "internal_monitor",
+        "field_meter"
     ]
 }

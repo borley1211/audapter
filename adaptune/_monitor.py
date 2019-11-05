@@ -17,7 +17,7 @@ m_params = hw_params.copy()
 # m_params["channels"] = 1
 
 
-def monitor(device=dev["monitor"], run_time: int = None) -> None:
+def monitor(device=dev["internal_monitor"], run_time: int = None) -> None:
 
     PCMDEV = passalsa.ALSA_Source(device=device, params=m_params)
 
@@ -50,7 +50,7 @@ def monitor(device=dev["monitor"], run_time: int = None) -> None:
     def _frames():
         yield from PCMDEV.read_data()
 
-    _anim = animation.FuncAnimation(
+    _ = animation.FuncAnimation(
         FIG,
         func=_update_spec,
         init_func=_init,

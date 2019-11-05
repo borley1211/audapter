@@ -10,12 +10,15 @@ from . import core
 from ._load_config import dev, hw_params
 
 
+__all__ = ["ALSA_Source", "ALSA_Sink", "run"]
+
+
 class ALSA_Source(object):
     """
     Linuxの基本サウンドシステム(ALSA)にアクセスし、音声入力を検出するクラスです。
     """
 
-    def __init__(self, device=dev["monitor"], mode=alsa.PCM_NONBLOCK, params=hw_params):
+    def __init__(self, device=dev["internal_monitor"], mode=alsa.PCM_NONBLOCK, params=hw_params):
         self.pcm = alsa.PCM(type=alsa.PCM_CAPTURE, mode=mode, device=device)
         self.config(**params)
         self.devname = device
@@ -53,7 +56,7 @@ class ALSA_Sink(object):
     Linuxの基本サウンドシステム(ALSA)にアクセスし、音声を出力するクラスです。
     """
 
-    def __init__(self, device=dev["main"], mode=alsa.PCM_NORMAL, params=hw_params):
+    def __init__(self, device=dev["target"], mode=alsa.PCM_NORMAL, params=hw_params):
         self.pcm = alsa.PCM(type=alsa.PCM_PLAYBACK, mode=mode, device=device)
         self.config(**params)
 
@@ -79,11 +82,11 @@ class ALSA_Sink(object):
 
 
 def run(domain: str = "time", run_time: Optional[int] = None) -> Union[bool, None]:
-    PCM_MONITOR = ALSA_Source(device=dev["monitor"])
-    PCM_SINK = ALSA_Sink(device=dev["main"])
-    PCM_MIC = ALSA_Source(device=dev["input"])
+    PCM_MONITOR = ALSA_Source(device=dev["internal_monitor"])
+    PCM_SINK = ALSA_Sink(device=dev["target"])
+    PCM_MIC = ALSA_Source(device=dev["field_meter"])
 
-    filt = core.AdapTuner()
+    filt = core.AdapTuner(domain=domain)
 
     ret = None
 

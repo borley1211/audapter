@@ -1,10 +1,12 @@
 import os
 from collections import OrderedDict
+from typing import OrderedDict as OrderedDictType
 
 import alsaaudio
 import commentjson
 import numpy
 from padasip import filters
+from sounddevice import default
 
 __all__ = ["hw_params", "filter_params", "domain", "default_filter", "dev"]
 
@@ -24,12 +26,15 @@ if _fmtname.startswith("PCM"):  # for alsaaudio
 else:  # for sounddevice
     _params["formatname"] = getattr(numpy, _params["formatname"])
 
-hw_params: OrderedDict = OrderedDict(_params)
+_params["rate"] = int(_params["rate"]) if _params["rate"] else default.samplerate
+_params["channels"] = int(_params["channels"])
 
-filter_params = config["filter_params"]
+hw_params: OrderedDictType = OrderedDict(_params)
 
-domain = config["filter_domain"]
+filter_params: OrderedDictType = config["filter_params"]
 
-default_filter = getattr(filters, config["filter_algo"])
+domain: str = str(config["filter_domain"])
 
-dev = config["devices"]
+default_filter: filters.AdaptiveFilter = getattr(filters, config["filter_algo"])
+
+dev: OrderedDictType[str, str] = config["devices"]
