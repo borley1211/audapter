@@ -1,6 +1,5 @@
 import os
 from collections import OrderedDict
-from typing import OrderedDict as OrderedDictType
 
 import alsaaudio
 import commentjson
@@ -29,12 +28,12 @@ else:  # for sounddevice
 _params["rate"] = int(_params["rate"]) if _params["rate"] else default.samplerate
 _params["channels"] = int(_params["channels"])
 
-hw_params: OrderedDictType = OrderedDict(_params)
+hw_params = _params.copy()
 
-filter_params: OrderedDictType = config["filter_params"]
+filter_params = config["filter_params"]
 
 domain: str = str(config["filter_domain"])
 
 default_filter: filters.AdaptiveFilter = getattr(filters, config["filter_algo"])
 
-dev: OrderedDictType[str, str] = config["devices"]
+dev = config["devices"]

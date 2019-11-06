@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [[source]]
-name = "pywheels"
+name = "piwheels"
 url = "https://www.piwheels.org/simple"
 verify_ssl = true
 

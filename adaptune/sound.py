@@ -6,7 +6,7 @@ import padasip
 import sounddevice as sd
 
 from . import core
-from ._load_config import default_filter, dev, domain, hw_params
+from .default import default_filter, dev, domain, hw_params
 
 
 Numeric = Union[int, float]
@@ -31,16 +31,17 @@ class TuningStream(object):
 
 
 def _callback(indata, outdata, frames, time, status):
-    if status:
-        print(status)
+    print(status) if status else print(f"PASSED in {time}")
     outdata[:] = indata
 
 
-def pass_thru(repeat: Numeric, duration: Numeric, micro: str = dev["field_meter"], pci: str = dev["target"]):
+def pass_thru(repeat: int, duration: Numeric, micro: str = dev["field_meter"], pci: str = dev["target"]):
     global _callback
     
     with sd.Stream(device=(micro, pci), callback=_callback):
         (sd.sleep(int(duration * 1000)) for n in range(repeat))
+    
+    return None
 
 
 if __name__ == "__main__":

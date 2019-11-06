@@ -24,7 +24,7 @@
         "-s",
         "./tests",
         "-p",
-        "test*.py"
+        "test_*.py"
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
@@ -58,6 +58,8 @@
     "python.dataScience.magicCommandsAsComments": true,
     "python.linting.flake8Enabled": true,
     "python.linting.mypyEnabled": true,
-    "python.testing.cwd": "${workspaceFolder}",
-    "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv"
+    "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv",
+    "editor.fontFamily": "monospace",
+    "terminal.integrated.fontFamily": "Cica",
+    "terminal.integrated.fontSize": 16
 }

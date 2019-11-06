@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: モジュール",
+            "type": "python",
+            "request": "launch",
+            "module": "adaptune",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: Current File (Integrated Terminal)",
             "type": "python",
             "request": "launch",
@@ -23,13 +30,6 @@
                     "remoteRoot": "."
                 }
             ]
-        },
-        {
-            "name": "Python: Module",
-            "type": "python",
-            "request": "launch",
-            "module": "adaptune",
-            "console": "integratedTerminal"
         },
         {
             "name": "Python: Django",

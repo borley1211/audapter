@@ -11,7 +11,7 @@ import numpy as np
 from matplotlib import animation
 from matplotlib import pyplot as plt
 from . import passalsa
-from ._load_config import hw_params, dev
+from .default import hw_params, dev
 
 m_params = hw_params.copy()
 # m_params["channels"] = 1
