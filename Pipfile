@@ -1,11 +1,11 @@
 [[source]]
-name = "pywheels"
-url = "https://www.piwheels.org/simple"
+name = "pypi"
+url = "https://pypi.org/simple"
 verify_ssl = true
 
 [[source]]
-name = "pypi"
-url = "https://pypi.org/simple"
+name = "pywheels"
+url = "https://www.piwheels.org/simple"
 verify_ssl = true
 
 [dev-packages]
@@ -15,22 +15,25 @@ recommonmark = "*"
 flake8 = "*"
 mypy = "*"
 ptpython = "*"
-pyls = "*"
 black = "*"
 pynvim = "*"
 neovim = "*"
+python-language-server = "*"
+isort = "*"
+pyls-black = "*"
+pyls-mypy = "*"
+pyls-isort = "*"
 
 [packages]
 numpy = "*"
 matplotlib = "*"
-typing = "*"
 librosa = "*"
 padasip = "*"
 commentjson = "*"
 sounddevice = "*"
 pysoundfile = "*"
 pyalsaaudio = "*"
-sympy = "*"
+scipy = "*"
 bashplotlib = "*"
 
 [scripts]
