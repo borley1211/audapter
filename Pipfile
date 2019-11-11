@@ -27,7 +27,6 @@ pyls-isort = "*"
 [packages]
 numpy = "*"
 matplotlib = "*"
-librosa = "*"
 padasip = "*"
 commentjson = "*"
 sounddevice = "*"
@@ -35,6 +34,7 @@ pysoundfile = "*"
 pyalsaaudio = "*"
 scipy = "*"
 bashplotlib = "*"
+librosa = {editable = true,git = "https://github.com/librosa/librosa.git"}
 
 [scripts]
 sphinxgendoc = "_opt=''; if [ -e './docs/conf.py' ]; then; _opt='-f'; else; _opt='-F'; fi; sphinx-apidoc '${_opt}' -o ./docs ./ ./setup.py ./adaptune/config.py ./tests"
