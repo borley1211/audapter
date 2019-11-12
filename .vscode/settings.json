@@ -61,5 +61,5 @@
     "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv",
     "editor.fontFamily": "monospace",
     "terminal.integrated.fontFamily": "Cica",
-    "terminal.integrated.fontSize": 16
+    "terminal.integrated.fontSize": 18
 }
