@@ -23,6 +23,7 @@ isort = "*"
 pyls-black = "*"
 pyls-mypy = "*"
 pyls-isort = "*"
+pytest = "*"
 
 [packages]
 numpy = "*"
