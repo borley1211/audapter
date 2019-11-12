@@ -1,1 +1,1 @@
-![AdapTune](adaptune/data/logo_transparent.png)
+![AUDAPTER](./src/audapter/data/desc.png)
