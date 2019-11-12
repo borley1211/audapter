@@ -23,6 +23,7 @@ isort = "*"
 pyls-black = "*"
 pyls-mypy = "*"
 pyls-isort = "*"
+audapter = {editable = true,git = "https://github.com/borley1211/audapter.git"}
 
 [packages]
 numpy = "*"
