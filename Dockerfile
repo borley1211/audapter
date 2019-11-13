@@ -5,12 +5,12 @@ ENV HOME /root
 ENV PYTHON_VERSION 3.8.0
 ENV PYENV_ROOT $HOME/.pyenv
 
-RUN apt update && apt upgrade -y
+RUN apt-get update && apt-get upgrade -y && apt-get install apt-utils -y
 RUN chmod go+w,u+s /tmp
 
-RUN apt install git zsh openssh-server build-essential -y
-RUN apt install wget unzip curl tree grep bison libssl-dev openssl zlib1g-dev -y
-RUN apt install make bash jq -y
+RUN apt-get install git zsh openssh-server build-essential -y
+RUN apt-get install wget unzip curl tree grep bison libssl-dev openssl zlib1g-dev -y
+RUN apt-get install make bash jq -y
 
 # init Dotfiles
 RUN curl -L https://raw.githubusercontent.com/borley1211/dotfiles/master/etc/install | bash
@@ -20,6 +20,7 @@ WORKDIR $HOME
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 
 # install Python(pyenv)
+RUN mkdir -p /etc/profile.d
 RUN echo 'eval "$(pyenv init -)"' >> /etc/profile.d/pyenv.sh
 RUN eval "$(pyenv init -)"
 RUN pyenv update
