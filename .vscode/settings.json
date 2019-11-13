@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/borley/.pyenv/versions/audapter/bin/python",
+    "python.pythonPath": ".venv/bin/python",
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true,
@@ -18,7 +18,7 @@
         "**/__pycache__/**": true,
         "**/.mypy_cache/**": true
     },
-    "python.testing.unittestEnabled": true,
+    "python.testing.unittestEnabled": false,
     "python.testing.unittestArgs": [
         "-v",
         "-s",
@@ -28,7 +28,7 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "pythonTestExplorer.testFramework": "unittest",
+    "pythonTestExplorer.testFramework": "pytest",
     "indentRainbow.ignoreErrorLanguages": [
         "markdown",
         "python",
@@ -61,5 +61,11 @@
     "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv",
     "editor.fontFamily": "\"Cica\", monospace",
     "terminal.integrated.fontFamily": "Cica",
-    "terminal.integrated.fontSize": 18
+    "terminal.integrated.fontSize": 18,
+    "editor.fontSize": 18,
+    "python.sortImports.path": "isort",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.promptToConfigure": false
 }
