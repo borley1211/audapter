@@ -1,6 +1,7 @@
 FROM ubuntu
 MAINTAINER borley1211 km.isetan@gmail.com
 
+ENV HOME /root
 ENV PYTHON_VERSION 3.8.0
 ENV PYENV_ROOT $HOME/.pyenv
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
@@ -19,9 +20,12 @@ RUN sed -i 's/.*session.*required.*pam_loginuid.so.*/session optional pam_loginu
 RUN mkdir -p /var/run/sshd
 
 # install Python(pyenv)
-RUN exec $(pyenv init -)
+RUN echo 'eval "$(pyenv init -)"' >> ~/.bashrc && \
+     eval "$(pyenv init -)"
 RUN pyenv update
-RUN pyenv install $PYTHON_VERSION
+RUN CFLAGS=-I/usr/include \
+    LDFLAGS=-L/usr/lib \
+    pyenv install $PYTHON_VERSION
 RUN pyenv local $PYTHON_VERSION
 
 RUN pip install -U pip setuptools poetry
