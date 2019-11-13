@@ -1,8 +1,9 @@
 FROM ubuntu
+ENV DEBIAN_FRONTEND noninteractive
 
 ENV HOME /root
 ENV PYTHON_VERSION 3.8.0
-ENV PYENV_ROOT $HOME/.pyenv
+ENV PYENV_ROOT="${HOME}/.pyenv"
 
 RUN apt-get update && apt-get upgrade -y && apt-get install apt-utils -y
 RUN chmod go+w,u+s /tmp
@@ -18,7 +19,7 @@ RUN curl -L https://raw.githubusercontent.com/borley1211/dotfiles/master/etc/ins
 WORKDIR $HOME/Dotfiles
 RUN make init
 WORKDIR $HOME
-ENV PATH $PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH
+ENV PATH="${PYENV_ROOT}/bin:$PYENV_ROOT/shims:$PATH"
 
 # install Python(pyenv)
 RUN mkdir -p /etc/profile.d
@@ -27,9 +28,9 @@ RUN echo 'eval "$(pyenv virtualenv-init -)"' >> /etc/profile.d/pyenv-virtualenv.
 RUN eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init -)"
 RUN CFLAGS=-I/usr/include \
     LDFLAGS=-L/usr/lib \
-    pyenv install $PYTHON_VERSION
-RUN pyenv global $PYTHON_VERSION
-RUN pyenv local $PYTHON_VERSION
+    pyenv install "$PYTHON_VERSION"
+RUN pyenv global "$PYTHON_VERSION"
+RUN pyenv local "$PYTHON_VERSION"
 
 RUN pip install -U pip setuptools
 RUN pip install poetry
