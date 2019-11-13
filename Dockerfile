@@ -28,8 +28,10 @@ RUN eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init -)"
 RUN CFLAGS=-I/usr/include \
     LDFLAGS=-L/usr/lib \
     pyenv install $PYTHON_VERSION
-RUN pyenv local $PYTHON_VERSION && pyenv global $PYTHON_VERSION
+RUN pyenv global $PYTHON_VERSION
+RUN pyenv local $PYTHON_VERSION
 
-RUN pip install -U pip setuptools poetry
+RUN pip install -U pip setuptools
+RUN pip install poetry
 RUN poetry config settings.virtualenvs.in-directory true
 RUN poetry install
