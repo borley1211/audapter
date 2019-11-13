@@ -1,4 +1,4 @@
-FROM Ubuntu:18.04
+FROM ubuntu
 MAINTAINER borley1211 km.isetan@gmail.com
 
 ENV PYTHON_VERSION 3.8.0
