@@ -1,5 +1,4 @@
 FROM ubuntu
-MAINTAINER borley1211 km.isetan@gmail.com
 
 ENV HOME /root
 ENV PYTHON_VERSION 3.8.0
@@ -22,8 +21,8 @@ ENV PATH $PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH
 # install Python(pyenv)
 RUN mkdir -p /etc/profile.d
 RUN echo 'eval "$(pyenv init -)"' >> /etc/profile.d/pyenv.sh
-RUN eval "$(pyenv init -)"
-RUN pyenv update
+RUN echo 'eval "$(pyenv virtualenv-init -)"' >> /etc/profile.d/pyenv-virtualenv.sh
+RUN eval "$(pyenv init -)" && eval "$(pyenv virtualenv-init -)"
 RUN CFLAGS=-I/usr/include \
     LDFLAGS=-L/usr/lib \
     pyenv install -v $PYTHON_VERSION
