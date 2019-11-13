@@ -14,12 +14,14 @@ RUN apt install make bash jq -y
 
 # init Dotfiles
 RUN curl -L https://raw.githubusercontent.com/borley1211/dotfiles/master/etc/install | bash
+WORKDIR $HOME/Dotfiles
+RUN make init
+WORKDIR $HOME
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 
 # install Python(pyenv)
-RUN echo 'eval "$(pyenv init -)"' >> /etc/profile.d/pyenv.sh && \
-    eval "$($PYENV_ROOT/bin/pyenv init -)"
-RUN exec "$SHELL"
+RUN echo 'eval "$(pyenv init -)"' >> /etc/profile.d/pyenv.sh
+RUN eval "$(pyenv init -)"
 RUN pyenv update
 RUN CFLAGS=-I/usr/include \
     LDFLAGS=-L/usr/lib \
