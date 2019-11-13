@@ -1,3 +1,40 @@
+[tool.poetry]
+name = "audapter"
+version = "0.1.0"
+description = "Adaptive Sound Processing"
+authors = ["borley1211 <km.isetan@gmail.com>"]
+license = "BSD-2-Clause"
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+numpy = "^1.17"
+matplotlib = "^3.1"
+padasip = "^1.1"
+commentjson = "^0.8.2"
+sounddevice = "^0.3.14"
+pysoundfile = "^0.9.0"
+pyalsaaudio = "^0.8.4"
+bashplotlib = "^0.6.5"
+cython = "^0.29.14"
+scipy = "*"
+
+[tool.poetry.dev-dependencies]
+sphinx = "^2.2"
+sphinx-rtd-theme = "^0.4.3"
+recommonmark = "^0.6.0"
+flake8 = "^3.7"
+mypy = "^0.740.0"
+ptpython = "^2.0"
+pynvim = "^0.3.2"
+neovim = "^0.3.1"
+python-language-server = "^0.30.0"
+isort = "^4.3"
+pyls-black = "^0.4.4"
+pyls-mypy = "^0.1.8"
+pyls-isort = "^0.1.1"
+pytest = "^5.2"
+black = {version = "*",allows-prereleases = true}
+
 [tool.black]
 line-length = 89
 include = '\.pyi?$'
@@ -17,3 +54,7 @@ exclude = '''
   )/
 )
 '''
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
