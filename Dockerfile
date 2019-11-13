@@ -17,7 +17,7 @@ RUN curl -L https://raw.githubusercontent.com/borley1211/dotfiles/master/etc/ins
 WORKDIR $HOME/Dotfiles
 RUN make init
 WORKDIR $HOME
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+ENV PATH $PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH
 
 # install Python(pyenv)
 RUN mkdir -p /etc/profile.d
