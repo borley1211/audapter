@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": ".venv/bin/python",
+    "python.pythonPath": "/home/borley/.pyenv/versions/audapter/bin/python",
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true,
@@ -59,7 +59,7 @@
     "python.linting.flake8Enabled": true,
     "python.linting.mypyEnabled": true,
     "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv",
-    "editor.fontFamily": "monospace",
+    "editor.fontFamily": "\"Cica\", monospace",
     "terminal.integrated.fontFamily": "Cica",
     "terminal.integrated.fontSize": 18
 }

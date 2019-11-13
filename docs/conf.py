@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "adaptune"
+project = "audapter"
 copyright = "2019, Miebori Kazuma"
 author = "Miebori Kazuma"
 
