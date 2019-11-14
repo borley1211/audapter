@@ -1,8 +1,8 @@
-FROM ubuntu
-ENV DEBIAN_FRONTEND noninteractive
+FROM ubuntu:18.04
+ENV DEBIAN_FRONTEND="noninteractive"
 
-ENV HOME /root
-ENV PYTHON_VERSION 3.8.0
+ENV HOME="/root"
+ENV PYTHON_VERSION="3.8.0"
 ENV PYENV_ROOT="${HOME}/.pyenv"
 
 RUN apt-get update && apt-get upgrade -y && apt-get install apt-utils -y
