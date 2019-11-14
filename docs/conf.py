@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "adaptune"
+project = "audapter"
 copyright = "2019, Miebori Kazuma"
 author = "Miebori Kazuma"
 
 # The full version, including alpha/beta/rc tags
-with open(os.path.join("..", project, "__init__.py")) as f:
-    match = re.search(r"__version__\s+=\s+(.*)", f.read())
+with open(os.path.join("..", "pyproject.toml")) as f:
+    match = re.search(r"version\s+=\s+\"(.*)\"", f.read())
 if match:
     release = str(ast.literal_eval(match.group(1)))
 

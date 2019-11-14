@@ -102,3 +102,6 @@ Pipfile.lock
 
 # Directory for Trial
 workspace/
+
+# chache for Pytest
+.pytest_cache/
