@@ -34,5 +34,5 @@ RUN pyenv local "$PYTHON_VERSION"
 
 RUN pip install -U pip setuptools
 RUN pip install poetry
-RUN poetry config settings.virtualenvs.in-directory true
+RUN poetry config settings.virtualenvs.in-project true
 RUN poetry install
