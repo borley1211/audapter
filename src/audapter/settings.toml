@@ -17,7 +17,7 @@ field_meter = "array"
 
 [filter]
 domain = "time"
-algorithm = "nlms"
+model = "nlms"
 
 [filter.padasip]
 mu = 0.1

@@ -6,27 +6,22 @@ from stft import spectrogram, ispectrogram as stft, istft
 
 from ..helper import config
 from ..interface.driver.filter_driver import FilterDriverABC
+from ..domain.model import FilterModel
 
 
 class FilterDriver(FilterDriverABC):
-    """
-    音響信号処理に利用可能な適応フィルタの基本クラスです。
-    """
-
     def __init__(
         self,
-        domain: str = config.FILTER.domain,
-        default_filter: pa.filters.AdaptiveFilter = config.FILTER.model,
-        n: int = 1024,
-        fs: int = config.SOUND.system.rate,
-    ) -> None:
+        domain=config.FILTER.domain,
+        filter_=FilterModel(config.FILTER.model),
+        frames: int = 1024,
+    ):
 
         self.domain = domain if domain in ["time", "freq"] else None
         if self.domain is None:
             raise
-        self.n_filter = n
-        self.rate = fs
-        self.filter: pa.filters.AdaptiveFilter = default_filter(
+        self.n_filter = frames
+        self.filter: pa.filters.AdaptiveFilter = filter_(
             self.n_filter, **config.FILTER.padasip
         )
         self.datas_in: np.ndarray = np.zeros(
@@ -55,40 +50,6 @@ class FilterDriver(FilterDriverABC):
         return istft(X_out), istft(Err), W_frq
 
     def tune(self, desired, data_in):
-        """
-        適応フィルタを更新します。
-
-        Args:
-            desired (np.ndarray): 目標値が格納されたベクトル(1次元配列)。
-            input (np.ndarray): 入力値が格納されたベクトル(1次元配列)。
-
-        Returns:
-            Tuple[np.ndarray, np.ndarray, np.ndarray]:
-                以下の要素をもつタプル。
-
-                * output (np.ndarray): 出力値のベクトル。
-
-                * error (np.ndarray): 全サンプルにおける誤差のベクトル。
-                
-                .. math::
-                    :nowrap:
-
-                    \[
-                    \left\{
-                        \\begin{array}{rcl}
-                            e & : & \\text{error} \\\\
-                            d & : & \\text{desired} \\\\
-                            x & : & \\text{input} \\\\
-                            \\boldsymbol{\omega} & : & \\text{filter weight}
-                        \\end{array}
-                    \\right. \\\\
-                    \\, \\\\
-                    e = d - \\boldsymbol{\omega} \cdot x
-                    \]
-
-                * weights (np.ndarray): 現在までのフィルタ係数(の履歴)。2次元配列。
-
-        """
         self.datas_in[-(data_in.size) :] = data_in
         if self.domain == "time":
             x_out = self._tune_at_time(desired, self.datas_in)
@@ -97,12 +58,6 @@ class FilterDriver(FilterDriverABC):
         return x_out
 
     def get_filter_weights(self) -> np.ndarray:
-        """
-        現在までの適応フィルタの係数(の履歴)を取得します。
-
-        Returns:
-            np.ndarray: 現在までのフィルタ係数行列。
-        """
         return self.filter.w
 
     def save_filter(self, filename: str) -> None:
