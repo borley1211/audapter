@@ -14,6 +14,7 @@ pysoundfile = "^0.9.0"
 bashplotlib = "^0.6.5"
 scipy = "*"
 stft = "^0.5.2"
+dynaconf = "^2.2"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"

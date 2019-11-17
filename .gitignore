@@ -99,6 +99,7 @@ __oneshot__.py
 
 # LockFile for PipEnv
 Pipfile.lock
+poetry.lock
 
 # Directory for Trial
 workspace/

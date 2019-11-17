@@ -1,0 +1,25 @@
+[sound.system]
+rate = 48000
+data_format = "float32"
+
+[sound.system.channels]
+    input = 2
+    output = 2
+
+[sound.sounddevice]
+never_drop_input = true
+prime_output_buffers_using_stream_callback = true
+
+[sound.target]
+main = "speaker"
+internal_monitor = "monitor"
+field_meter = "array"
+
+[filter]
+domain = "time"
+algorithm = "nlms"
+
+[filter.padasip]
+mu = 0.1
+eps = 1.0
+w = "zeros"

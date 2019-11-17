@@ -2,22 +2,23 @@ from typing import Tuple
 
 import numpy as np
 import padasip as pa
-from librosa.core import istft, stft
+from stft import spectrogram, ispectrogram as stft, istft
 
-from adaptune._load_config import default_filter, domain, filter_params, hw_params
+from ..helper import config
+from ..interface.driver.filter_driver import FilterDriverABC
 
 
-class AdapTuner(object):
+class FilterDriver(FilterDriverABC):
     """
     音響信号処理に利用可能な適応フィルタの基本クラスです。
     """
 
     def __init__(
         self,
-        domain: str = domain,
-        default_filter: pa.filters.AdaptiveFilter = default_filter,
+        domain: str = config.FILTER.domain,
+        default_filter: pa.filters.AdaptiveFilter = config.FILTER.model,
         n: int = 1024,
-        fs: int = hw_params["rate"],
+        fs: int = config.SOUND.system.rate,
     ) -> None:
 
         self.domain = domain if domain in ["time", "freq"] else None
@@ -26,7 +27,7 @@ class AdapTuner(object):
         self.n_filter = n
         self.rate = fs
         self.filter: pa.filters.AdaptiveFilter = default_filter(
-            self.n_filter, **filter_params
+            self.n_filter, **config.FILTER.padasip
         )
         self.datas_in: np.ndarray = np.zeros(
             self.n_filter, dtype=np.float16
@@ -53,9 +54,7 @@ class AdapTuner(object):
         X_out, Err, W_frq = self.filter.run(D_d, D_i)
         return istft(X_out), istft(Err), W_frq
 
-    def tune(
-        self, desired: np.ndarray, data_in: np.ndarray
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def tune(self, desired, data_in):
         """
         適応フィルタを更新します。
 
