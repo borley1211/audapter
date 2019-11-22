@@ -2,7 +2,7 @@ from typing import Tuple
 
 import numpy as np
 import padasip as pa
-from stft import spectrogram, ispectrogram as stft, istft
+from stft import spectrogram as stft, ispectrogram as istft
 
 from ..helper import config
 from ..interface.driver.filter_driver import FilterDriverABC

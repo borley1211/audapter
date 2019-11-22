@@ -105,3 +105,6 @@ workspace/
 
 # chache for Pytest
 .pytest_cache/
+
+# Sourcetrail files
+audapter.src**
