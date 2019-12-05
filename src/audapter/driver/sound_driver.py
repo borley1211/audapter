@@ -23,7 +23,7 @@ sd.default.prime_output_buffers_using_stream_callback = (
 )
 
 
-class SoundDriver(object):
+class SoundDriver(SoundDriverABC):
     def __init__(
         self,
         device_dict=config.SOUND.target,
