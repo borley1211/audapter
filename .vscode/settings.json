@@ -60,7 +60,6 @@
     "python.linting.mypyEnabled": true,
     "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv",
     "editor.fontFamily": "\"Cica\", monospace",
-    "terminal.integrated.fontFamily": "Cica",
     "terminal.integrated.fontSize": 18,
     "editor.fontSize": 18,
     "python.sortImports.path": ".venv/bin/isort",
