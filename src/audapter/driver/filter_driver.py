@@ -4,7 +4,7 @@ import numpy as np
 import padasip as pa
 from stft import spectrogram as stft, ispectrogram as istft
 
-from ..helper import config
+from ..domain import setting
 from ..interface.driver.filter_driver import FilterDriverABC
 from ..domain.model import FilterModel
 
@@ -12,8 +12,8 @@ from ..domain.model import FilterModel
 class FilterDriver(FilterDriverABC):
     def __init__(
         self,
-        domain=config.FILTER.domain,
-        filter_=FilterModel(config.FILTER.model),
+        domain=setting.FILTER.domain,
+        filter_=FilterModel,
         frames: int = 1024,
     ):
 
@@ -21,9 +21,10 @@ class FilterDriver(FilterDriverABC):
         if self.domain is None:
             raise
         self.n_filter = frames
-        self.filter: pa.filters.AdaptiveFilter = filter_(
-            self.n_filter, **config.FILTER.padasip
+        filter_obj = filter_(
+            setting.FILTER.model, self.n_filter, **setting.FILTER.padasip
         )
+        self.filter = filter_obj.adaptive_filter
         self.datas_in: np.ndarray = np.zeros(
             self.n_filter, dtype=np.float16
         )  # 入力を記憶しておくndarray
@@ -34,7 +35,7 @@ class FilterDriver(FilterDriverABC):
         """
         Time-based tuning
         """
-        desired, data_in = desired.tolist(), data_in.tolist()
+        desired, data_in = desired[:], data_in[:]
         return self.filter.run(desired, data_in)
 
     def _tune_at_freq(
