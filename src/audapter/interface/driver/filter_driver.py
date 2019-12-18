@@ -52,7 +52,7 @@ class FilterDriverABC(metaclass=ABCMeta):
         raise NotImplementedError
     
     @abstractmethod
-    def get_filter_weight(self) -> ndarray:
+    def get_filter_weights(self) -> ndarray:
         """
         Returns:
             np.ndarray: A filter-weight for now.

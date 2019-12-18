@@ -1,7 +1,6 @@
 from typing import Tuple
 
 import numpy as np
-import padasip as pa
 from stft import spectrogram as stft, ispectrogram as istft
 
 from ..helper.load_config import settings
@@ -11,17 +10,12 @@ from ..domain.model import FilterModel
 
 class FilterDriver(FilterDriverABC):
     def __init__(
-        self, domain=settings.get('FILTER.domain'), filter_cls=FilterModel, frames: int = 1024,
+        self, domain=settings.get('FILTER.domain'), frames: int = 1024,
     ):
 
-        self.domain = domain if domain in ["time", "freq"] else None
-        if self.domain is None:
-            raise
+        self.domain = domain
         self.n_filter = frames
-        filter_obj = filter_cls(
-            settings.FILTER.model, self.n_filter, **settings.FILTER.padasip
-        )
-        self.filter = filter_obj.adaptive_filter
+        self.filter = FilterModel(model=settings.get("FILTER.model"), n=self.n_filter, **dict(settings.get("FILTER.padasip")))
         self.datas_in: np.ndarray = np.zeros(
             self.n_filter, dtype=np.float16
         )  # 入力を記憶しておくndarray
@@ -41,14 +35,14 @@ class FilterDriver(FilterDriverABC):
         """
         Frequency-based tuning
         """
-        D_d = np.abs(stft(desired, n_fft=self.n_filter))
-        D_i = np.abs(stft(data_in, n_fft=self.n_filter))
+        D_d = np.abs(stft(desired, framelength=self.n_filter))
+        D_i = np.abs(stft(data_in, framelength=self.n_filter))
         D_d, D_i = D_d.tolist(), D_i.tolist()
         X_out, Err, W_frq = self.filter.run(D_d, D_i)
         return istft(X_out), istft(Err), W_frq
 
     def tune(self, desired, data_in):
-        self.datas_in[-(data_in.size) :] = data_in
+        self.datas_in[-self.n_filter:] = 0
         if self.domain == "time":
             x_out = self._tune_at_time(desired, self.datas_in)
         elif self.domain == "freq":

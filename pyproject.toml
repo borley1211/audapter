@@ -15,6 +15,8 @@ bashplotlib = "^0.6.5"
 scipy = "*"
 stft = "^0.5.2"
 dynaconf = "^2.2"
+adaptfilt = "^0.2"
+pydocstyle = "^5.0.1"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"
