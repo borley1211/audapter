@@ -6,7 +6,7 @@ from padasip.filters.base_filter import AdaptiveFilter as _AdaptiveFilterCls
 
 @_dataclass(frozen=True)
 class FilterModel(object):
-    adaptive_filter : _AdaptiveFilterCls
-    
-    def __init__(self, model : str, length : int, **kwargs):
+    adaptive_filter: _AdaptiveFilterCls
+
+    def __init__(self, model: str, length: int, **kwargs):
         self.adaptive_filter = _AdaptiveFilter(model=model, n=length, **kwargs)

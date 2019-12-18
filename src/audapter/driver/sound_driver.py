@@ -5,30 +5,30 @@ import numpy as np
 import padasip
 import sounddevice as sd
 
-from . import filter_driver
-from ..helper import config, types
 from ..domain.model import FilterModel
+from ..driver import filter_driver
+from ..helper import types
+from ..helper.load_config import settings
 from ..interface.driver.sound_driver import SoundDriverABC
 
 
-config.SOUND.system.rate = sd.default.samplerate
-sd.default.dtype = config.SOUND.system.data_format
+sd.default.dtype = settings.get("SOUND.system.data_format")
 sd.default.channels = (
-    config.SOUND.system.channels.input,
-    config.SOUND.system.channels.output,
+    settings.get("SOUND.system.channels.input"),
+    settings.get("SOUND.system.channels.output"),
 )
-sd.default.never_drop_input = config.SOUND.sounddevice.never_drop_input
-sd.default.prime_output_buffers_using_stream_callback = (
-    config.SOUND.sounddevice.prime_output_buffers_using_stream_callback
+sd.default.never_drop_input = settings.get("SOUND.sounddevice.never_drop_input")
+sd.default.prime_output_buffers_using_stream_callback = settings.get(
+    "SOUND.sounddevice.prime_output_buffers_using_stream_callback"
 )
 
 
 class SoundDriver(SoundDriverABC):
     def __init__(
         self,
-        device_dict=config.SOUND.target,
-        domain=config.FILTER.domain,
-        filter_=FilterModel(config.FILTER.model),
+        device_dict=settings.get('SOUND.target'),
+        domain=settings.get('FILTER.domain'),
+        filter_cls=FilterModel,
         frames=1024,
     ):
         self.TargetStream = sd.Stream(device=device_dict["target"])
@@ -36,7 +36,7 @@ class SoundDriver(SoundDriverABC):
         self.InternalMonitor = sd.Stream(device=device_dict["internal_monitor"])
 
         self.Tuner = filter_driver.FilterDriver(
-            domain, filter_, frames, sd.default.samplerate
+            domain, filter_cls, frames, sd.default.samplerate
         )
 
 
@@ -48,8 +48,8 @@ def _callback(indata, outdata, frames, time, status):
 def pass_thru(
     repeat,
     duration,
-    micro=config.SOUND.target["field_meter"],
-    pci=config.SOUND.target["target"],
+    micro=settings.get('SOUND.target.field_meter'),
+    pci=settings.get('SOUND.target.target'),
 ):
     global _callback
 

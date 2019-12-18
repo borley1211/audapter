@@ -4,25 +4,22 @@ import numpy as np
 import padasip as pa
 from stft import spectrogram as stft, ispectrogram as istft
 
-from ..domain import setting
+from ..helper.load_config import settings
 from ..interface.driver.filter_driver import FilterDriverABC
 from ..domain.model import FilterModel
 
 
 class FilterDriver(FilterDriverABC):
     def __init__(
-        self,
-        domain=setting.FILTER.domain,
-        filter_=FilterModel,
-        frames: int = 1024,
+        self, domain=settings.get('FILTER.domain'), filter_cls=FilterModel, frames: int = 1024,
     ):
 
         self.domain = domain if domain in ["time", "freq"] else None
         if self.domain is None:
             raise
         self.n_filter = frames
-        filter_obj = filter_(
-            setting.FILTER.model, self.n_filter, **setting.FILTER.padasip
+        filter_obj = filter_cls(
+            settings.FILTER.model, self.n_filter, **settings.FILTER.padasip
         )
         self.filter = filter_obj.adaptive_filter
         self.datas_in: np.ndarray = np.zeros(

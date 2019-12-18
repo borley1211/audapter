@@ -62,7 +62,6 @@
     "editor.fontFamily": "\"Cica\", monospace",
     "terminal.integrated.fontSize": 18,
     "editor.fontSize": 18,
-    "python.sortImports.path": ".venv/bin/isort",
     "python.testing.pytestArgs": [
         "tests"
     ],
