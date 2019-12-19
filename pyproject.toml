@@ -15,7 +15,7 @@ stft = "^0.5.2"
 dynaconf = "^2.2"
 pydocstyle = "^5.0.1"
 scipy = "^1.4.0"
-adasigpy = "^0.1.1"
+adasigpy = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"
