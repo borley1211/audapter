@@ -2,7 +2,6 @@
 from typing import Optional
 
 import numpy as np
-import padasip
 import sounddevice as sd
 
 from ..domain.model import FilterModel
@@ -10,7 +9,6 @@ from ..driver import filter_driver
 from ..helper import types
 from ..helper.load_config import settings
 from ..interface.driver.sound_driver import SoundDriverABC
-
 
 sd.default.dtype = settings.get("SOUND.system.data_format")
 sd.default.channels = (
@@ -26,8 +24,8 @@ sd.default.prime_output_buffers_using_stream_callback = settings.get(
 class SoundDriver(SoundDriverABC):
     def __init__(
         self,
-        device_dict=settings.get('SOUND.target'),
-        domain=settings.get('FILTER.domain'),
+        device_dict=settings.get("SOUND.target"),
+        domain=settings.get("FILTER.domain"),
         filter_cls=FilterModel,
         frames=1024,
     ):
@@ -48,8 +46,8 @@ def _callback(indata, outdata, frames, time, status):
 def pass_thru(
     repeat,
     duration,
-    micro=settings.get('SOUND.target.field_meter'),
-    pci=settings.get('SOUND.target.target'),
+    micro=settings.get("SOUND.target.field_meter"),
+    pci=settings.get("SOUND.target.target"),
 ):
     global _callback
 

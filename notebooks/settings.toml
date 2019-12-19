@@ -16,10 +16,9 @@ internal_monitor = "monitor"
 field_meter = "array"
 
 [default.filter]
-domain = "freq"
 model = "nlms"
-
-[default.filter.padasip]
+n = 1024
 mu = 0.1
-eps = 1.0
 w = "random"
+domain = "freq"
+lambda_ = 1.0

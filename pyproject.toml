@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "audapter"
-version = "0.1.0rc"
+version = "0.1.0"
 description = "Adaptive Sound Processing"
 authors = ["borley1211 <km.isetan@gmail.com>"]
 license = "MIT"
@@ -15,7 +15,7 @@ scipy = "*"
 stft = "^0.5.2"
 dynaconf = "^2.2"
 pydocstyle = "^5.0.1"
-adasigpy = {version = "^0.0.1-rc.0", allow-prereleases = true}
+adasigpy = "^0.1.0-rc.0"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"
