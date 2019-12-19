@@ -6,17 +6,16 @@ authors = ["borley1211 <km.isetan@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = "^3.6"
 numpy = "^1.17"
-padasip = "^1.1"
 sounddevice = "^0.3.14"
 pysoundfile = "^0.9.0"
 bashplotlib = "^0.6.5"
 scipy = "*"
 stft = "^0.5.2"
 dynaconf = "^2.2"
-adaptfilt = "^0.2"
 pydocstyle = "^5.0.1"
+adasigpy = {version = "^0.0.1-rc.0", allow-prereleases = true}
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"

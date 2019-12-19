@@ -1,3 +1,3 @@
 from dataclasses import dataclass as _dataclass
 
-from padasip.filters import AdaptiveFilter as FilterModel
+from adasigpy.adasigpy import AdaptiveSignalProcesser as FilterModel

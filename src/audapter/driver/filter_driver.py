@@ -10,14 +10,14 @@ from ..domain.model import FilterModel
 
 class FilterDriver(FilterDriverABC):
     def __init__(
-        self, domain=settings.get('FILTER.domain'), frames: int = 1024,
+        self, domain=settings.get("FILTER.domain"), frames: int = 1024,
     ):
 
         self.domain = domain
-        self.n_filter = frames
-        self.filter = FilterModel(model=settings.get("FILTER.model"), n=self.n_filter, **dict(settings.get("FILTER.padasip")))
+        self.n = settings.get("FILTER.n")
+        self.filter = FilterModel(**dict(settings.get("FILTER")))
         self.datas_in: np.ndarray = np.zeros(
-            self.n_filter, dtype=np.float16
+            self.n, dtype=np.float16
         )  # 入力を記憶しておくndarray
 
     def _tune_at_time(
@@ -35,14 +35,14 @@ class FilterDriver(FilterDriverABC):
         """
         Frequency-based tuning
         """
-        D_d = np.abs(stft(desired, framelength=self.n_filter))
-        D_i = np.abs(stft(data_in, framelength=self.n_filter))
+        D_d = np.abs(stft(desired, framelength=self.n))
+        D_i = np.abs(stft(data_in, framelength=self.n))
         D_d, D_i = D_d.tolist(), D_i.tolist()
         X_out, Err, W_frq = self.filter.run(D_d, D_i)
         return istft(X_out), istft(Err), W_frq
 
     def tune(self, desired, data_in):
-        self.datas_in[-self.n_filter:] = 0
+        self.datas_in[-self.n_filter :] = 0
         if self.domain == "time":
             x_out = self._tune_at_time(desired, self.datas_in)
         elif self.domain == "freq":
