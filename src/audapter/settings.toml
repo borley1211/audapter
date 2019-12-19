@@ -1,0 +1,24 @@
+[default.sound.system]
+rate = 48000
+data_format = "float32"
+
+[default.sound.system.channels]
+input = 2
+output = 2
+
+[default.sound.sounddevice]
+never_drop_input = true
+prime_output_buffers_using_stream_callback = true
+
+[default.sound.target]
+main = "speaker"
+internal_monitor = "monitor"
+field_meter = "array"
+
+[default.filter]
+model = "nlms"
+n = 1024
+mu = 0.1
+w = "random"
+domain = "freq"
+lambda_ = 1.0

@@ -1,9 +1,0 @@
-include LICENSE
-
-graft tests
-graft docs
-
-global-exclude *.py[co]
-
-prune docs/_build
-prune docs/_templates

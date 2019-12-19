@@ -60,12 +60,17 @@
     "python.linting.mypyEnabled": true,
     "python.venvPath": "~/.pyenv, ${workspaceFolder}/.venv",
     "editor.fontFamily": "\"Cica\", monospace",
-    "terminal.integrated.fontFamily": "Cica",
     "terminal.integrated.fontSize": 18,
     "editor.fontSize": 18,
-    "python.sortImports.path": "isort",
     "python.testing.pytestArgs": [
         "tests"
     ],
-    "python.testing.promptToConfigure": false
+    "python.testing.promptToConfigure": false,
+    "python.linting.mypyArgs": [
+        "--ignore-missing-imports=1",
+        "--follow-imports=skip",
+        "--show-column-numbers=1",
+        "--namespace-packages=1"
+    ],
+    "python.linting.mypyPath": ".venv/bin/mypy"
 }

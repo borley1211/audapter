@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-*/__pycache__/
+__pycache__/
 *.py[cod]
 *$py.class
 
@@ -21,6 +21,7 @@ parts/
 sdist/
 var/
 *.egg-info/
+*.egg-info/*
 .installed.cfg
 *.egg
 
@@ -97,11 +98,17 @@ ENV/
 # No longer using files
 __oneshot__.py
 
-# LockFile for PipEnv
-Pipfile.lock
+# LockFiles
+*.lock
 
 # Directory for Trial
 workspace/
 
 # chache for Pytest
 .pytest_cache/
+
+# Sourcetrail files
+audapter.src**
+
+# egg infos
+audapter.egg-info/
