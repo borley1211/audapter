@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
-from numpy import ndarray
-from typing import Tuple
+from typing import Tuple, Union
 
-from ...domain.model import FilterModel as _FilterModel
+from nptyping import Array
 
 
 class FilterDriverABC(metaclass=ABCMeta):
@@ -11,26 +10,26 @@ class FilterDriverABC(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __init__(self, domain : str, filter_ : _FilterModel, frames : int) -> None:
+    def __init__(self, shape: Union[int, Tuple[int]]):
         raise NotImplementedError
 
     @abstractmethod
-    def tune(self, desired : ndarray, data_in : ndarray) -> Tuple[ndarray, ndarray, ndarray]:
+    def tune(self, desired: Array, data_in: Array) -> Tuple[Array, Array, Array]:
         """
         Update internal filter.
 
         Args:
-            desired (np.ndarray): A vector including desired data(1-dimension).
-            input (np.ndarray): A vector including input data(1-dimension)。
+            desired (np.Array): A vector including desired data(1-dimension).
+            input (np.Array): A vector including input data(1-dimension)。
 
         Returns:
-            Tuple[np.ndarray, np.ndarray, np.ndarray]:
+            Tuple[np.Array, np.Array, np.Array]:
                 A tuple includes...
 
-                * output (np.ndarray): An output vector.
+                * output (np.Array): An output vector.
 
-                * error (np.ndarray): An error vector.
-                
+                * error (np.Array): An error vector.
+
                 .. math::
                     :nowrap:
 
@@ -47,22 +46,14 @@ class FilterDriverABC(metaclass=ABCMeta):
                     e = d - \\boldsymbol{\omega} \cdot x
                     \]
 
-                * weights (np.ndarray): A filter-weight for now(2-dimensions).
+                * weights (np.Array): A filter-weight for now(2-dimensions).
         """
         raise NotImplementedError
-    
+
     @abstractmethod
-    def get_filter_weights(self) -> ndarray:
+    def get_filter_weights(self) -> Array:
         """
         Returns:
-            np.ndarray: A filter-weight for now.
-        """
-        raise NotImplementedError
-    
-    @abstractmethod
-    def save_filter(self, filename : str) -> None:
-        """
-        Args:
-            filename (str): A file name to want to save.
+            np.Array: A filter-weight for now.
         """
         raise NotImplementedError

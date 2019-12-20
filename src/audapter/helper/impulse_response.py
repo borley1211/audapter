@@ -2,11 +2,13 @@
 This is app for Frequency Response Measuring.
 '''
 import numpy as np
+from typing import Tuple
+from nptyping import Array
 
 __all__ = ["sweptsine", "take_a_mean"]
 
 
-def sweptsine(num=2**16, repeat=3, gain=50):
+def sweptsine(num=2**16, repeat=3, gain=50) -> Tuple[Array, Array, int, int]:
     '''
     make TSP(Swept-Sine-Signal)
 
@@ -16,7 +18,7 @@ def sweptsine(num=2**16, repeat=3, gain=50):
         gain {int or float} -- gain (default: {50})
 
     Returns:
-        (ndarray, ndarray, int, int) -- (Swept-Sine, Invert Swept-Sine(freq), 'num', 'repeat')
+        (Array, Array, int, int) -- (Swept-Sine, Invert Swept-Sine(freq), 'num', 'repeat')
     '''
     eff = num // (2**2)
     k = np.arange(0, num)
@@ -36,17 +38,17 @@ def sweptsine(num=2**16, repeat=3, gain=50):
     return ss_real, ss_inv_omega, num, repeat
 
 
-def take_a_mean(rec, num, repeat):
+def take_a_mean(rec, num, repeat) -> Array:
     '''
     Average REC Data
 
     Arguments:
-        rec {ndarray} -- recorded data
+        rec {Array} -- recorded data
         num {int} -- signal length of Swept-Sine
         repeat {int} -- repeat number
 
     Returns:
-        ndarray -- averaged data
+        Array -- averaged data
     '''
     rec_ave = np.zeros((num - 1, rec.ndim))
     for n in range(0, num * repeat, num):
