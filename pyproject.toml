@@ -15,7 +15,7 @@ stft = "^0.5.2"
 dynaconf = "^2.2"
 pydocstyle = "^5.0.1"
 scipy = "^1.4.0"
-adasigpy = {path = "../adasigpy/dist/adasigpy-0.1.3rc0-py3-none-any.whl"}
+adasigpy = "^0.1.3"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"
