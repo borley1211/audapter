@@ -14,21 +14,21 @@ class FilterDriverABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def tune(self, desired: Array, data_in: Array) -> Tuple[Array, Array, Array]:
+    def tune(self, desired: Array, data_in: Array) -> (Array, Array, Array):
         """
         Update internal filter.
 
         Args:
-            desired (np.Array): A vector including desired data(1-dimension).
-            input (np.Array): A vector including input data(1-dimension)。
+            desired (Array): A vector including desired data(1-dimension).
+            input (Array): A vector including input data(1-dimension)。
 
         Returns:
-            Tuple[np.Array, np.Array, np.Array]:
+            Tuple[Array, Array, Array]:
                 A tuple includes...
 
-                * output (np.Array): An output vector.
+                * output (Array): An output vector.
 
-                * error (np.Array): An error vector.
+                * error (Array): An error vector.
 
                 .. math::
                     :nowrap:
@@ -46,7 +46,7 @@ class FilterDriverABC(metaclass=ABCMeta):
                     e = d - \\boldsymbol{\omega} \cdot x
                     \]
 
-                * weights (np.Array): A filter-weight for now(2-dimensions).
+                * weights (Array): A filter-weight for now(2-dimensions).
         """
         raise NotImplementedError
 

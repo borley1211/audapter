@@ -1,8 +1,9 @@
-from ..driver.filter_driver import FilterDriver
-from scipy.fftpack import fft, ifft
 import numpy as np
 from nptyping import Array
+from scipy.fftpack import fft, ifft
 from typing_extensions import NoReturn
+
+from ..driver.filter_driver import FilterDriver
 
 
 class FIR_Tuner:
