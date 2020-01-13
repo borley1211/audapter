@@ -12,8 +12,6 @@
     "python.autoComplete.addBrackets": true,
     "python.jediEnabled": false,
     "python.analysis.logLevel": "Trace",
-    "restructuredtext.confPath": "${workspaceFolder}/docs",
-    "restructuredtext.experimental": true,
     "files.watcherExclude": {
         "**/__pycache__/**": true,
         "**/.mypy_cache/**": true
@@ -29,11 +27,6 @@
     "python.testing.pytestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "pythonTestExplorer.testFramework": "pytest",
-    "indentRainbow.ignoreErrorLanguages": [
-        "markdown",
-        "python",
-        "latex"
-    ],
     "python.formatting.provider": "black",
     "python.linting.pylintEnabled": false,
     "shortcuts.buttons": [

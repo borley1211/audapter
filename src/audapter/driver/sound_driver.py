@@ -38,7 +38,7 @@ class SoundDriver(SoundDriverABC):
         )
 
 
-def _callback(indata, outdata, frames, time, status):
+def callback_to_aplly_fir(indata, outdata, frames, time, status):
     print(status) if status else print(f"PASSED in {time}")
     outdata[:] = indata
 
@@ -49,9 +49,9 @@ def pass_thru(
     micro=settings.get("SOUND.target.field_meter"),
     pci=settings.get("SOUND.target.target"),
 ):
-    global _callback
+    global callback_to_aplly_fir
 
-    with sd.Stream(device=(micro, pci), callback=_callback):
+    with sd.Stream(device=(micro, pci), callback=callback_to_aplly_fir):
         (sd.sleep(int(duration * 1000)) for n in range(repeat))
 
     return None
