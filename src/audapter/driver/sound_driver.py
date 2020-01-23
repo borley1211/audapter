@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-from typing import Optional
 
-import numpy as np
 import sounddevice as sd
 
 from ..domain.model import FilterModel
 from ..driver import filter_driver
-from ..helper import types
-from ..helper.load_config import settings
+from ..helper.config import settings
 from ..interface.driver.sound_driver import SoundDriverABC
 
 sd.default.dtype = settings.get("SOUND.system.data_format")

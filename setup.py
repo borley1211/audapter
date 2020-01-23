@@ -37,4 +37,4 @@ setup_kwargs = {
 }
 
 
-setup(**setup_kwargs)
+setup(**setup_kwargs, install_requires=['dynaconf', 'sounddevice'])

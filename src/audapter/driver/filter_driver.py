@@ -1,10 +1,9 @@
-from typing import Tuple
-
 from nptyping import Array
 
 from ..domain.model import FilterModel
-from ..helper.load_config import settings
+from ..helper.config import settings
 from ..interface.driver.filter_driver import FilterDriverABC
+
 
 # from stft import ispectrogram as istft
 # from stft import spectrogram as stft

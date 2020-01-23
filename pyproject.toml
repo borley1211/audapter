@@ -16,8 +16,8 @@ scipy = "^1.4.0"
 nptyping = "^0.3.1"
 adasigpy = {version = "^0.1.7-beta.0", allow-prereleases = true}
 syncsweptsine = {git = "https://github.com/SiggiGue/syncsweptsine.git"}
-rirme = {git = "https://github.com/borley1211/rirme.git"}
 pyroomacoustics = "^0.3.1"
+fire = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^2.2"
