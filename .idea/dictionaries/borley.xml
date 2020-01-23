@@ -5,6 +5,7 @@
       <w>defaultsabspath</w>
       <w>levelname</w>
       <w>loglevel</w>
+      <w>mypy</w>
     </words>
   </dictionary>
 </component>

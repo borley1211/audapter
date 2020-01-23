@@ -1,14 +1,16 @@
+import logging as _log
 import pathlib as _path
 import shutil as _sh
 from typing import Optional, Union
 
-from fire import Fire
+import fire
 
 from . import CONFIGFILENAME, DEFAULTSABSPATH
-from .helper.logger import logger, _log
+from .helper.config import settings
+from .helper.logger import logger
 
 
-class CommandLineInterface:
+class Cli(object):
     """
     Adaptive Audio Processor
     """
@@ -17,18 +19,19 @@ class CommandLineInterface:
     cfgfile: Union[str, _path.Path]
 
     def __init__(self, loglevel: Optional[str] = 'INFO'):
-        logger.setLevel(getattr(_log, loglevel.upper()))
+        logger.setLevel(getattr(_log, str(loglevel.upper())))
 
-    def init(self, name: Optional[str] = None, path: Optional[str, _path.Path] = "."):
+    def init(self, name: Optional[str] = None, path: Optional[Union[str, _path.Path]] = "."):
         self.path = _path.Path(path)
         self.name = name or self.path.parent.name
-        self.cfgfile = (self.path / CONFIGFILENAME).absolute()
+        self.cfgfile = (self.path + "/" + CONFIGFILENAME).absolute()
 
         if self.cfgfile.exists():
             raise FileExistsError(f'{self.cfgfile} already exists.')
 
         _sh.copy(DEFAULTSABSPATH, self.path)
+        return settings
 
 
 if __name__ == "__main__":
-    Fire(CommandLineInterface)
+    fire.Fire(Cli)

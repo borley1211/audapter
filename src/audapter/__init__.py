@@ -9,6 +9,6 @@ CONFIGFILENAME = "audapter.toml"
 DEFAULTS = "audapter.defaults.toml"
 DEFAULTSABSPATH = (MODULEPATH / DEFAULTS).absolute()
 
-CONFIGDIR = _pathlib.Path(getenv("XDG_CONFIGDIR", "~/.config") / "audapter").absolute()
+CONFIGDIR = _pathlib.Path(getenv("XDG_CONFIGDIR", "~/.config") + "/audapter").absolute()
 
 LOGGERNAME = "audapter"

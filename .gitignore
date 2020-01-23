@@ -111,4 +111,4 @@ workspace/
 audapter.src**
 
 # egg infos
-audapter.egg-info/
+*/audapter.egg-info

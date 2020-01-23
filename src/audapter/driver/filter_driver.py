@@ -5,10 +5,6 @@ from ..helper.config import settings
 from ..interface.driver.filter_driver import FilterDriverABC
 
 
-# from stft import ispectrogram as istft
-# from stft import spectrogram as stft
-
-
 class FilterDriver(FilterDriverABC):
     def __init__(self, shape):
 
