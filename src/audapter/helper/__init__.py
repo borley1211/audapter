@@ -1,6 +1,6 @@
 import pathlib as _pathlib
-
 from typing import Optional
+
 from typing_extensions import NoReturn
 
 

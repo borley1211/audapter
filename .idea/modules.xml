@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file:////wsl$/Ubuntu/home/borley/audapter/.idea/audapter.iml" filepath="//wsl$/Ubuntu/home/borley/audapter/.idea/audapter.iml" />
+      <module fileurl="file:///home/borley/audapter/.idea/audapter.iml" filepath="/home/borley/audapter/.idea/audapter.iml" />
     </modules>
   </component>
 </project>
