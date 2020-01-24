@@ -20,11 +20,11 @@ sd.default.prime_output_buffers_using_stream_callback = settings.get(
 
 class SoundDriver(SoundDriverABC):
     def __init__(
-        self,
-        device_dict=settings.get("SOUND.target"),
-        domain=settings.get("FILTER.domain"),
-        filter_cls=FilterModel,
-        frames=1024,
+            self,
+            device_dict=settings.get("SOUND.target"),
+            domain=settings.get("FILTER.domain"),
+            filter_cls=FilterModel,
+            frames=1024,
     ):
         self.TargetStream = sd.Stream(device=device_dict["target"])
         self.FieldMeter = sd.Stream(device=device_dict["field_meter"])
@@ -41,10 +41,10 @@ def callback_to_aplly_fir(indata, outdata, frames, time, status):
 
 
 def pass_thru(
-    repeat,
-    duration,
-    micro=settings.get("SOUND.target.field_meter"),
-    pci=settings.get("SOUND.target.target"),
+        repeat,
+        duration,
+        micro=settings.get("SOUND.target.field_meter"),
+        pci=settings.get("SOUND.target.target"),
 ):
     global callback_to_aplly_fir
 

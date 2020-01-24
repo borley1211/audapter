@@ -7,7 +7,6 @@ from ..interface.driver.filter_driver import FilterDriverABC
 
 class FilterDriver(FilterDriverABC):
     def __init__(self, shape):
-
         self.shape = shape
         self.filter_ = FilterModel(
             settings.get("FILTER.model"),

@@ -11,13 +11,12 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import ast
-import re
 import os
+import re
 import sys
 from typing import List
 
 sys.path.insert(0, os.path.abspath("../"))
-
 
 # -- Project information -----------------------------------------------------
 
@@ -30,7 +29,6 @@ with open(os.path.join("..", "pyproject.toml")) as f:
     match = re.search(r"version\s+=\s+\"(.*)\"", f.read())
 if match:
     release = str(ast.literal_eval(match.group(1)))
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -53,7 +51,6 @@ language = "ja"
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns: List = ["setup.rst"]
-
 
 # -- Options for HTML output -------------------------------------------------
 
