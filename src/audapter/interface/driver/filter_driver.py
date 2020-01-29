@@ -20,7 +20,7 @@ class FilterDriverABC(metaclass=ABCMeta):
 
         Args:
             desired (Array): A vector including desired data(1-dimension).
-            input (Array): A vector including input data(1-dimension)。
+            data_in (Array): A vector including input data(1-dimension)。
 
         Returns:
             Tuple[Array, Array, Array]:
