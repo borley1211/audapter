@@ -42,9 +42,6 @@ version = '^0.0.8'
 version = '^0.1.7-beta.0'
 allow-prereleases = true
 
-[tool.poetry.dependencies.syncsweptsine]
-git = 'https://github.com/SiggiGue/syncsweptsine.git'
-
 [tool.poetry.dev-dependencies]
 sphinx = '^2.2'
 sphinx-rtd-theme = '^0.4.3'

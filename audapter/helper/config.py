@@ -7,7 +7,6 @@ from os import getenv
 import sounddevice as sd
 from dynaconf import LazySettings
 
-
 __all__ = ["settings"]
 
 

@@ -22,4 +22,7 @@ field_meter = "array"
 model = "nlms"
 mu = 0.1
 w = "unit"
+length = 10
 lambda_ = 1.0
+blocksize = 256
+window = "hann"

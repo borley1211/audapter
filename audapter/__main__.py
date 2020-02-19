@@ -1,10 +1,4 @@
-from typer import Typer
+import sys
+from .helper import cli
 
-from .command import *
-
-
-app = Typer()
-
-
-if __name__ == "__main__":
-    app()
+sys.exit(cli())

@@ -192,7 +192,6 @@ sounddevice==0.3.14 \
 stft==0.5.2 \
     --hash=sha256:4b15af04667add177ff56929ffdc9eeca5bbadf5ad775b9d72eaa486e4d91e8f \
     --hash=sha256:b6411afb45e286de412e352b8bc4a59c3a997904b0b8f3945cb767f0b7347e06
--e git+https://github.com/SiggiGue/syncsweptsine.git@05a60e70d527799b97f66db80acec85955840b11#egg=syncsweptsine
 toml==0.10.0 \
     --hash=sha256:f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3 \
     --hash=sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e \
