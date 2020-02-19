@@ -1,6 +1,23 @@
-<div align="center">
-<img src="https://raw.githubusercontent.com/borley1211/audapter/master/data/desc.png" alt="header" title="AUDAPTER">
-</div>
+# audapter
 
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+-----
 
+**Table of Contents**
+
+* [Installation](#installation)
+* [License](#license)
+
+## Installation
+
+audapter is distributed on [PyPI](https://pypi.org) as a universal
+wheel and is available on Linux/macOS and Windows and supports
+Python 2.7/3.5+ and PyPy.
+
+```bash
+$ pip install audapter
+```
+
+## License
+
+audapter is distributed under the terms of the
+[MIT License](https://choosealicense.com/licenses/mit).
