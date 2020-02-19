@@ -8,6 +8,9 @@ import sounddevice as sd
 from dynaconf import LazySettings
 
 
+__all__ = ["settings"]
+
+
 # default values
 MODULEPATH = _path.Path(__file__).parent.parent.absolute()
 
@@ -20,4 +23,4 @@ CONFIGDIR = _path.Path(getenv("XDG_CONFIGDIR", "~/.config") + "/audapter").absol
 LOGGERNAME = "audapter"
 
 settings = LazySettings(INCLUDES_FOR_DYNACONF=str(DEFAULTSABSPATH))
-settings.set('SOUND.SYSTEM.RATE', sd.default.samplerate)
+settings.set("SOUND.SYSTEM.RATE", sd.default.samplerate)
