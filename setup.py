@@ -38,8 +38,7 @@ kwargs = {
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
@@ -49,9 +48,9 @@ kwargs = {
     "packages": find_packages(exclude=("tests", "tests.*")),
 }
 
-#################### BEGIN USER OVERRIDES ####################
+# ################## BEGIN USER OVERRIDES ################## #
 # Add your customizations in this section.
 
-###################### END USER OVERRIDES ####################
+# #################### END USER OVERRIDES ################## #
 
 setup(**kwargs)

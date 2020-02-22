@@ -106,7 +106,7 @@ __oneshot__.py
 workspace/
 
 # chache for Pytest
-.pytest_cache/
+.pytest_cache
 
 # Sourcetrail files
 audapter.src**
