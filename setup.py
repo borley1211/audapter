@@ -51,6 +51,6 @@ kwargs = {
 # ################## BEGIN USER OVERRIDES ################## #
 # Add your customizations in this section.
 
-# #################### END USER OVERRIDES ################## #
+# ################### END USER OVERRIDES ################### #
 
 setup(**kwargs)

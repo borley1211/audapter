@@ -1,25 +1,12 @@
-"""
-Configuration module
-"""
-import pathlib as _path
-from os import getenv
+from dynaconf import LazySettings, settings
 
-import sounddevice as sd
-from dynaconf import LazySettings
-
-__all__ = ["settings"]
+__all__ = ["load_settings"]
 
 
 # default values
-MODULEPATH = _path.Path(__file__).parent.parent.absolute()
+CONFPATH = settings.get("CONFPATH")
 
-CONFIGFILENAME = "audapter.toml"
-DEFAULTS = "audapter.defaults.toml"
-DEFAULTSABSPATH = (MODULEPATH / DEFAULTS).absolute()
 
-CONFIGDIR = _path.Path(getenv("XDG_CONFIGDIR", "~/.config") + "/audapter").absolute()
-
-LOGGERNAME = "audapter"
-
-settings = LazySettings(INCLUDES_FOR_DYNACONF=str(DEFAULTSABSPATH))
-settings.set("SOUND.SYSTEM.RATE", sd.default.samplerate)
+def load_settings(confpath: str = CONFPATH):
+    settings_local = LazySettings(INCLUDES_FOR_DYNACONF=str(CONFPATH))
+    return settings_local

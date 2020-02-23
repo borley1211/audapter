@@ -4,8 +4,10 @@ import sounddevice as sd
 
 from ..domain.model import FilterModel
 from ..driver import filter_driver
-from ..helper.config import settings
+from ..helper.config import load_settings
 from ..interface.driver.sound_driver import SoundDriverABC
+
+settings = load_settings()
 
 sd.default.dtype = settings.get("SOUND.system.data_format")
 sd.default.channels = (
@@ -20,35 +22,29 @@ sd.default.prime_output_buffers_using_stream_callback = settings.get(
 
 class SoundDriver(SoundDriverABC):
     def __init__(
-            self,
-            device_dict=settings.get("SOUND.target"),
-            domain=settings.get("FILTER.domain"),
-            filter_cls=FilterModel,
-            frames=1024,
+        self, device_dict=settings.get("SOUND.target"),
     ):
-        self.TargetStream = sd.Stream(device=device_dict["target"])
-        self.FieldMeter = sd.Stream(device=device_dict["field_meter"])
-        self.InternalMonitor = sd.Stream(device=device_dict["internal_monitor"])
+        self.MainTarget = sd.Stream(device=device_dict["main"])
+        self.Observer = sd.Stream(device=device_dict["observer"])
+        self.System = sd.Stream(device=device_dict["system"])
 
-        self.Tuner = filter_driver.FilterDriver(
-            domain, filter_cls, frames, sd.default.samplerate
-        )
+        self.Tuner = filter_driver.FilterDriver()
 
 
-def callback_to_aplly_fir(indata, outdata, frames, time, status):
+def callback_for_test(indata, outdata, frames, time, status):
     print(status) if status else print(f"PASSED in {time}")
     outdata[:] = indata
 
 
 def pass_thru(
-        repeat,
-        duration,
-        micro=settings.get("SOUND.target.field_meter"),
-        pci=settings.get("SOUND.target.target"),
+    repeat,
+    duration,
+    system=settings.get("SOUND.target.system"),
+    target=settings.get("SOUND.target.main"),
 ):
-    global callback_to_aplly_fir
+    global callback_for_test
 
-    with sd.Stream(device=(micro, pci), callback=callback_to_aplly_fir):
+    with sd.Stream(device=(system, target), callback=callback_for_test):
         (sd.sleep(int(duration * 1000)) for n in range(repeat))
 
     return None

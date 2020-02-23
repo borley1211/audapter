@@ -14,7 +14,7 @@ class FilterDriverABC(metaclass=ABCMeta):
         raise NotImplementedError
 
     @abstractmethod
-    def tune(self, desired: Array, data_in: Array) -> (Array, Array, Array):
+    def run(self, desired: Array, data_in: Array) -> (Array, Array, Array):
         """
         Update internal filter.
 
@@ -54,6 +54,6 @@ class FilterDriverABC(metaclass=ABCMeta):
     def get_filter_weights(self) -> Array:
         """
         Returns:
-            np.Array: A filter-weight for now.
+            Array: A filter-weight for now.
         """
         raise NotImplementedError
