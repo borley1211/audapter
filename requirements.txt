@@ -108,7 +108,7 @@ markupsafe==1.1.1 \
     --hash=sha256:29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b
 nptyping==0.3.1 \
     --hash=sha256:87a49b05c4c5d99673e5ea844bca86db5078b777a4c767e987db3b591d0c2358
-numpy==1.18.1 \
+numpy==1.22.0rc1 \
     --hash=sha256:20b26aaa5b3da029942cdcce719b363dbe58696ad182aff0e5dcb1687ec946dc \
     --hash=sha256:70a840a26f4e61defa7bdf811d7498a284ced303dfbc35acb7be12a39b2aa121 \
     --hash=sha256:17aa7a81fe7599a10f2b7d95856dc5cf84a4eefa45bc96123cbbc3ebc568994e \
