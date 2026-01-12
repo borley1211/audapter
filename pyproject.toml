@@ -72,7 +72,7 @@ version = '*'
 allow-prereleases = true
 
 [tool.poetry.dev-dependencies.jupyter-lsp]
-version = '^0.7.0-beta.0'
+version = '^0.9.0'
 allow-prereleases = true
 
 [tool.poetry.dev-dependencies.python-language-server]
