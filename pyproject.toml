@@ -77,7 +77,7 @@ allow-prereleases = true
 
 [tool.poetry.dev-dependencies.python-language-server]
 extras = ['all']
-version = '^0.31.7'
+version = '^0.36.0'
 
 [tool.poetry.scripts]
 audapter = 'audapter:main'
