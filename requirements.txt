@@ -152,7 +152,7 @@ pysoundfile==0.9.0.post1 \
 python-box==3.4.6 \
     --hash=sha256:694a7555e3ff9fbbce734bbaef3aad92b8e4ed0659d3ed04d56b6a0a0eff26a9 \
     --hash=sha256:a71d3dc9dbaa34c8597d3517c89a8041bd62fa875f23c0f3dad55e1958e3ce10
-python-dotenv==0.10.3 \
+python-dotenv==1.2.2 \
     --hash=sha256:f157d71d5fec9d4bd5f51c82746b6344dffa680ee85217c123f4a0c8117c4544 \
     --hash=sha256:debd928b49dbc2bf68040566f55cdb3252458036464806f4094487244e2a4093
 scipy==1.8.0 \
