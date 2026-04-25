@@ -45,7 +45,7 @@ allow-prereleases = true
 [tool.poetry.dev-dependencies]
 sphinx = '^2.2'
 sphinx-rtd-theme = '^0.4.3'
-recommonmark = '^0.6.0'
+recommonmark = '^0.7.0'
 flake8 = '^3.7'
 mypy = '^0.740.0'
 ptpython = '^2.0'
